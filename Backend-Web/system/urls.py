@@ -1,6 +1,6 @@
 from django.urls import path
-from parent_organization import views
-app_name='parent_organization'
+from system import views
+app_name='system'
 
 urlpatterns = [
     #landing page

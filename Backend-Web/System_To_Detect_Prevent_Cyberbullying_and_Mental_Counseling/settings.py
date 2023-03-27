@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'parent_organization',
     'application_users',
+    'system',
     
 ]
 
