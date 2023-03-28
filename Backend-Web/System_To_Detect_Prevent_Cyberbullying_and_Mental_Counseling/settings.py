@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'parent_organization',
     'application_users',
     'system',
+    'api',
+    'rest_framework',
     
 ]
 
