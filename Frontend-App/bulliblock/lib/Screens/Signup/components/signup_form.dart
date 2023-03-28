@@ -18,9 +18,8 @@ class SignUpForm extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
-            onSaved: (email) {},
             decoration: InputDecoration(
-              hintText: "Your email",
+              hintText: "User ID",
               prefixIcon: Padding(
                 padding: const EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.person),
@@ -29,12 +28,41 @@ class SignUpForm extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-            child: TextFormField(
+            child:TextFormField(
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            cursorColor: kPrimaryColor,
+            onSaved: (email) {},
+            decoration: InputDecoration(
+              hintText: "Your email",
+              prefixIcon: Padding(
+                padding: const EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.email),
+              ),
+            ),
+          ),
+          ),
+        
+          TextFormField(
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
               decoration: InputDecoration(
                 hintText: "Your password",
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.lock),
+                ),
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+            child:TextFormField(
+              textInputAction: TextInputAction.done,
+              obscureText: true,
+              cursorColor: kPrimaryColor,
+              decoration: InputDecoration(
+                hintText: "Confirm password",
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.lock),
