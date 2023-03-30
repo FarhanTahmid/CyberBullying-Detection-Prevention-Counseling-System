@@ -13,7 +13,7 @@ class Signup(APIView):
 
         # Check if the username and email are already taken
         if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-            return Response({'error': 'Username or email already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Username or email already exists','status':400}, status=status.HTTP_400_BAD_REQUEST)
         
         # Create a new user
         user = User.objects.create(
