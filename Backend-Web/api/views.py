@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,auth
 from application_users.models import Parent_organization_users
 from django.contrib.auth.hashers import make_password
+
 
 class Signup(APIView):
     def post(self, request):
@@ -30,6 +31,24 @@ class Signup(APIView):
         except:
             Parent_organization_users.DoesNotExist
             return Response({'error': 'Username Does not exist in the Organisation Database!'}, status=status.HTTP_205_RESET_CONTENT)
+
+class Login(APIView):
+    def post(self,request):
+        data=request.data
+        username=data.get('username')
+        password=data.get('password')
+
+        print(username)
+        print(password)
+
+        user=auth.authenticate(username=username,password=password)
+        
+        if user is not None:
+            auth.login(request,user)
+            return Response({'success': 'Logged in successfully','username':username}, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response({'error': 'Login unsuccessful'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
         
