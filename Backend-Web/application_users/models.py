@@ -11,6 +11,7 @@ class Parent_organization_users(models.Model):
     -uses their user_id as primary key
     -foreignKey: Parent_organization_id, to solely identify which organization the user belongs to
     -stores the necessary basic informations needed for a profile
+    -stores if the user is proctor or not
     '''
     
     user_id=models.CharField(null=False,blank=False,primary_key=True,max_length=50)
@@ -21,6 +22,7 @@ class Parent_organization_users(models.Model):
     email_address=models.EmailField(null=True,blank=True)
     home_address=models.CharField(null=True,blank=True,max_length=200)
     gender=models.CharField(null=True,blank=True,max_length=10)
+    is_proctor=models.BooleanField(null=False,blank=False,default=False)
     
     
     class Meta:
