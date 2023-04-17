@@ -40,9 +40,13 @@ class SignupFormState extends State<SignUpForm> {
       // Have to show Toast here
       if ((response.statusCode) == 400) {
         print("Username already exists");
-      } else if ((response.statusCode) == 201) {
+      } 
+      else if ((response.statusCode) == 201) {
         print("Created");
-      } else {
+      }else if ((response.statusCode) == 205) {
+        print("Username does not exist in database");
+      }
+      else {
         print("No connection");
       }
     
