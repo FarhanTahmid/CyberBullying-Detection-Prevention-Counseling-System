@@ -17,6 +17,7 @@ class Parent_organization_users(models.Model):
     user_id=models.CharField(null=False,blank=False,primary_key=True,max_length=50)
     organization_id=models.ForeignKey(Parent_organization,null=False,blank=False,on_delete=models.CASCADE)
     full_name=models.CharField(null=False,blank=False,max_length=100)
+    user_picture=models.ImageField(null=True,blank=True,upload_to='user_pictures/',default='user_pictures/default_picture.png')
     birth_date=models.DateField(null=True,blank=True)
     contact_no=models.CharField(null=True,blank=True,max_length=20)
     email_address=models.EmailField(null=True,blank=True)

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'parent_organization',
     'application_users',
     'system',
+    'user_complains',
     'api',
     'rest_framework',
     
@@ -122,6 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+import os
+#media
+MEDIA_ROOT= os.path.join(BASE_DIR, 'User Files/')
+MEDIA_URL= "/media_files/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
