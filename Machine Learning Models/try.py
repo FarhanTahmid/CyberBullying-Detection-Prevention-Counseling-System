@@ -28,4 +28,3 @@ xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=.20,random_state=1)
 
 model=SVC(gamma='auto')
 
-model.fit(xtrain,ytrain)
