@@ -59,19 +59,19 @@ class User_Complain_Registration(APIView):
         
         
         #get user data
-        # try:
-        get_user_data=Parent_organization_users.objects.get(user_id=complainee_id)
+        try:
+            get_user_data=Parent_organization_users.objects.get(user_id=complainee_id)
             
             #get organization id
-        organization_id=get_user_data.organization_id
-        # except:
-        #     return Response({'error': 'Complain Lodging unsuccessful because id doesnt exist.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            organization_id=get_user_data.organization_id
+        except:
+            return Response({'error': 'Complain Lodging unsuccessful because id doesnt exist.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
         
         #register a complain now
-        # try:
-        new_complain=User_Complains(
+        try:
+            new_complain=User_Complains(
                 complainee_id=Parent_organization_users.objects.get(user_id=complainee_id),
                 organization_id=Parent_organization.objects.get(id=organization_id.id),
                 complain_type=data.get('complain_type'),
@@ -82,10 +82,46 @@ class User_Complain_Registration(APIView):
                 complain_description=data.get('complain_description')
                 
             )
-        new_complain.save()
-        return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
-        # except:
-        #     return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            new_complain.save()
+            return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
+        except:
+            return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        
+class Get_User_Profile(APIView):
+
+    def get(self,request):
+
+        #get user profile and id
+        current_user=request.user
+        username=current_user.username
+
+        try:
+            get_user_data=Parent_organization_users.objects.get(user_id=username)
+
+            return Response({'success': 'User found','user_id':get_user_data.user_id,
+                             'organization_id':get_user_data.organization_id,
+                             'full_name':get_user_data.full_name,
+                             'user_picture':get_user_data.user_picture,
+                             'birth_date':get_user_data.birth_date,
+                             'contact_no':get_user_data.contact_no,
+                             'email_address':get_user_data.email_address,
+                             'home_address':get_user_data.home_address,
+                             'gender':get_user_data.gender,
+                             'is_proctor':get_user_data.is_proctor
+                             }, status=status.HTTP_302_FOUND)
+
+        except:
+            return Response({'error': 'User not found'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class Details_of_complains_Lodged_by_user(APIView):
+
+    def get(self,request):
+        current_user=request.user
+        user_id=current_user.username
+
+        
+
+
 
 
 
