@@ -5,6 +5,7 @@ from django.contrib.auth.models import User,auth
 from application_users.models import Parent_organization_users
 from user_complains.models import User_Complains
 from parent_organization.models import Parent_organization
+from user_complains.models import User_Complains
 from django.contrib.auth.hashers import make_password
 
 
@@ -86,6 +87,47 @@ class User_Complain_Registration(APIView):
             return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
         except:
             return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        
+class Get_User_Profile(APIView):
+
+    def get(self,request):
+
+        #get user profile and id
+        current_user=request.user
+        username=current_user.username
+
+        try:
+            get_user_data=Parent_organization_users.objects.get(user_id=username)
+
+            return Response({'success': 'User found','user_id':get_user_data.user_id,
+                             'organization_id':get_user_data.organization_id,
+                             'full_name':get_user_data.full_name,
+                             'user_picture':get_user_data.user_picture,
+                             'birth_date':get_user_data.birth_date,
+                             'contact_no':get_user_data.contact_no,
+                             'email_address':get_user_data.email_address,
+                             'home_address':get_user_data.home_address,
+                             'gender':get_user_data.gender,
+                             'is_proctor':get_user_data.is_proctor
+                             }, status=status.HTTP_302_FOUND)
+
+        except:
+            return Response({'error': 'User not found'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class Details_of_complains_Lodged_by_user(APIView):
+
+    def get(self,request):
+        current_user=request.user
+        user_id=current_user.username
+
+        get_complains=User_Complains.objects.get(complainee_id=user_id).all()
+
+        return Response({'success': 'Complains loaded',
+                         'complains':get_complains}
+                         , status=status.HTTP_302_FOUND)
+
+
+
 
 
 class User_Profile_Data(APIView):

@@ -1,5 +1,7 @@
+import 'package:bullishield/Screens/HomePage/homepage.dart';
+import 'package:bullishield/Screens/Login/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:bullishield/Screens/Welcome/welcome_screen.dart';
+
 import 'package:bullishield/constants.dart';
 
 void main() => runApp(const MyApp());
@@ -11,9 +13,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'BulliBlock',
-      theme: ThemeData(
+      themeMode: ThemeMode.light,
+      theme: ThemeData(primarySwatch: Colors.purple),
+      darkTheme: ThemeData(
+          appBarTheme: AppBarTheme(
+            color: Colors.purple,
+            iconTheme: IconThemeData(color: Colors.white),
+          ),
+          primarySwatch: Colors.purple,
           primaryColor: kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -37,7 +45,10 @@ class MyApp extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
           )),
-      home: const WelcomeScreen(),
+      debugShowCheckedModeBanner: false,
+      routes: {
+        "/": (context) => LoginScreen(),
+      },
     );
   }
 }
