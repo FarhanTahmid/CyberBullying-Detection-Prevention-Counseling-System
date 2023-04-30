@@ -25,7 +25,7 @@ class Parent_organization(models.Model):
     class Meta:
         verbose_name="Parent Organization"
     def __str__(self) -> str:
-        return self.name
+        return str(self.id)
     def get_absolute_url(self):
         return reverse("parent_organization", kwargs={"name":self.name})
 
