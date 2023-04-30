@@ -59,19 +59,19 @@ class User_Complain_Registration(APIView):
         
         
         #get user data
-        # try:
-        get_user_data=Parent_organization_users.objects.get(user_id=complainee_id)
+        try:
+            get_user_data=Parent_organization_users.objects.get(user_id=complainee_id)
             
             #get organization id
-        organization_id=get_user_data.organization_id
-        # except:
-        #     return Response({'error': 'Complain Lodging unsuccessful because id doesnt exist.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            organization_id=get_user_data.organization_id
+        except:
+            return Response({'error': 'Complain Lodging unsuccessful because id doesnt exist.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
         
         #register a complain now
-        # try:
-        new_complain=User_Complains(
+        try:
+            new_complain=User_Complains(
                 complainee_id=Parent_organization_users.objects.get(user_id=complainee_id),
                 organization_id=Parent_organization.objects.get(id=organization_id.id),
                 complain_type=data.get('complain_type'),
@@ -82,11 +82,19 @@ class User_Complain_Registration(APIView):
                 complain_description=data.get('complain_description')
                 
             )
-        new_complain.save()
-        return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
-        # except:
-        #     return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            new_complain.save()
+            return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
+        except:
+            return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
+
+class User_Profile_Data(APIView):
+    
+    def get(self,request,username):
+        
+        user_details=Parent_organization_users.objects.get(user_id=username)
+        print(user_details)
+        return Response({'success':'Got data','username':user_details.full_name},status=status.HTTP_202_ACCEPTED)
 
 
         
