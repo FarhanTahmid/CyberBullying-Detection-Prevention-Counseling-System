@@ -130,5 +130,13 @@ class Details_of_complains_Lodged_by_user(APIView):
 
 
 
+class User_Profile_Data(APIView):
+    
+    def get(self,request,username):
+        
+        user_details=Parent_organization_users.objects.get(user_id=username)
+        print(user_details)
+        return Response({'success':'Got data','username':user_details.full_name},status=status.HTTP_202_ACCEPTED)
+
 
         
