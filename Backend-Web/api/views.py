@@ -5,6 +5,7 @@ from django.contrib.auth.models import User,auth
 from application_users.models import Parent_organization_users
 from user_complains.models import User_Complains
 from parent_organization.models import Parent_organization
+from user_complains.models import User_Complains
 from django.contrib.auth.hashers import make_password
 
 
@@ -119,7 +120,12 @@ class Details_of_complains_Lodged_by_user(APIView):
         current_user=request.user
         user_id=current_user.username
 
-        
+        get_complains=User_Complains.objects.get(complainee_id=user_id).all()
+
+        return Response({'success': 'Complains loaded',
+                         'complains':get_complains}
+                         , status=status.HTTP_302_FOUND)
+
 
 
 
