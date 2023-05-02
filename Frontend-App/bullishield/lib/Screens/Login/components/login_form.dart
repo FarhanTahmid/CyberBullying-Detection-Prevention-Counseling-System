@@ -1,5 +1,6 @@
+import 'package:bullishield/Screens/HomePage/homepage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
@@ -21,20 +22,51 @@ class LoginFormState extends State<LoginForm> {
   final passwordController = TextEditingController();
 
   void login() async {
-    var response;
     String loginUrl = "http://127.0.0.1:8000/apis/login/";
 
-    response = await http.post(Uri.parse(loginUrl), body: {
+    var response = await http.post(Uri.parse(loginUrl), body: {
       'username': userIdController.text.trim(),
       'password': passwordController.text.trim(),
     });
-    print(response.statusCode);
+    
     if ((response.statusCode) == 202) {
-      print("Logged in Successfully");
+      
+      Fluttertoast.showToast(
+        msg: "Login Successful",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[700],
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
+      //Go to the homepage upon successful login
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
     } else if ((response.statusCode) == 401) {
-      print("Login Failed");
+      //show toast message upon unsuccessful login
+      
+      Fluttertoast.showToast(
+        msg: "Wrong credentials! Try again!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[700],
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
     } else {
-      print("onno");
+      Fluttertoast.showToast(
+        msg: "Check your network connection and Try again!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[700],
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
     }
   }
 
