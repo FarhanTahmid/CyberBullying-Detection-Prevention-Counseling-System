@@ -49,11 +49,22 @@ class Login(APIView):
         else:
             return Response({'error': 'Login unsuccessful'}, status=status.HTTP_401_UNAUTHORIZED)
 
+class User_Authentication(APIView):
+    
+    def get(self,request):
+        
+        user=request.user
+        if(user.is_authenticated):
+            return Response({'success': 'User authenticated'}, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+            
+
 class User_Complain_Registration(APIView):
     
     def post(self,request):
         data=request.data
-        
         #get the current user
         current_user=request.user
         complainee_id=current_user.username
