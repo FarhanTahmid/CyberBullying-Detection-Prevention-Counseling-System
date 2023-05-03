@@ -1,12 +1,19 @@
 // ignore_for_file: prefer_const_constructors
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyDrawer extends StatelessWidget {
-  
+  void getUserdata() async {
+    String user_data_url = "http://127.0.0.1:8000/apis/user_details/";
+
+    var response = await http.get(Uri.parse(user_data_url));
+    print(response.statusCode);
+  }
+
   @override
   Widget build(BuildContext context) {
+    getUserdata();
     final imageUrl = "https://avatars.githubusercontent.com/u/96833618?v=4";
     return Drawer(
       child: Container(
