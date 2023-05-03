@@ -1,3 +1,4 @@
+import 'package:bullishield/Screens/HomePage/homepage.dart';
 import 'package:flutter/material.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
@@ -19,8 +20,9 @@ class LoginFormState extends State<LoginForm> {
 
   final userIdController = TextEditingController();
   final passwordController = TextEditingController();
+  var logged_in=false;
 
-  void login() async {
+  login() async {
     var response;
     String loginUrl = "http://127.0.0.1:8000/apis/login/";
 
@@ -28,9 +30,8 @@ class LoginFormState extends State<LoginForm> {
       'username': userIdController.text.trim(),
       'password': passwordController.text.trim(),
     });
-    print(response.statusCode);
     if ((response.statusCode) == 202) {
-      print("Logged in Successfully");
+      print("Logged in");
     } else if ((response.statusCode) == 401) {
       print("Login Failed");
     } else {
