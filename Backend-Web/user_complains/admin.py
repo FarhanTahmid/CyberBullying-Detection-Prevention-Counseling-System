@@ -1,6 +1,10 @@
 from django.contrib import admin
-from . models import User_Complains
+from . models import User_Complains,Complain_types
 # Register your models here.
+
+@admin.register(Complain_types)
+class Complain_types(admin.ModelAdmin):
+    list_display=['id','complain_type']
 
 @admin.register(User_Complains)
 class User_Complains(admin.ModelAdmin):

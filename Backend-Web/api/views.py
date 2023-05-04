@@ -106,6 +106,7 @@ class Get_User_Profile(APIView):
         #get user profile and id
         current_user=request.user
         username=current_user.username
+        print(f"The username is {username}")
 
         try:
             get_user_data=Parent_organization_users.objects.get(user_id=username)
@@ -120,8 +121,8 @@ class Get_User_Profile(APIView):
                              'home_address':get_user_data.home_address,
                              'gender':get_user_data.gender,
                              'is_proctor':get_user_data.is_proctor
-                             }, status=status.HTTP_302_FOUND)
-
+                             }, status=status.HTTP_202_ACCEPTED)
+        
         except:
             return Response({'error': 'User not found'}, status=status.HTTP_400_BAD_REQUEST)
         

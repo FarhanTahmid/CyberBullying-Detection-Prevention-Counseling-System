@@ -20,6 +20,7 @@ class LoginFormState extends State<LoginForm> {
 
   final userIdController = TextEditingController();
   final passwordController = TextEditingController();
+  var logged_in=false;
 
   void login() async {
 
