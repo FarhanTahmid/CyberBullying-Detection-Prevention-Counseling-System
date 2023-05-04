@@ -5,6 +5,7 @@ import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:bullishield/user.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
@@ -20,19 +21,17 @@ class LoginFormState extends State<LoginForm> {
 
   final userIdController = TextEditingController();
   final passwordController = TextEditingController();
-  var logged_in=false;
+  var logged_in = false;
 
   void login() async {
-
     String loginUrl = "http://127.0.0.1:8000/apis/login/";
-    try{
-        var response = await http.post(Uri.parse(loginUrl), body: {
+    try {
+      var response = await http.post(Uri.parse(loginUrl), body: {
         'username': userIdController.text.trim(),
         'password': passwordController.text.trim(),
       });
-      
+
       if ((response.statusCode) == 202) {
-        
         Fluttertoast.showToast(
           msg: "Login Successful",
           toastLength: Toast.LENGTH_SHORT,
@@ -42,6 +41,15 @@ class LoginFormState extends State<LoginForm> {
           textColor: Colors.white,
           fontSize: 16.0,
         );
+        //TODO:
+        //go to backends and get user information on arguments, fix api
+        //get response from the api and initialize and test users
+        
+
+
+
+        // var get_user_info
+        // User current_user = User();
         //Go to the homepage upon successful login
         Navigator.push(
           context,
@@ -49,7 +57,7 @@ class LoginFormState extends State<LoginForm> {
         );
       } else if ((response.statusCode) == 401) {
         //show toast message upon unsuccessful login
-        
+
         Fluttertoast.showToast(
           msg: "Wrong credentials! Try again!",
           toastLength: Toast.LENGTH_SHORT,
@@ -70,19 +78,17 @@ class LoginFormState extends State<LoginForm> {
           fontSize: 16.0,
         );
       }
-    }catch (e){
-
-        Fluttertoast.showToast(
-          msg: "Please check your network connection and Try again!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.grey[700],
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Please check your network connection and Try again!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[700],
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
-    
   }
 
   @override
