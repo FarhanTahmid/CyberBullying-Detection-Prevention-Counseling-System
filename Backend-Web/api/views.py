@@ -112,7 +112,7 @@ class Get_User_Profile(APIView):
             get_user_data=Parent_organization_users.objects.get(user_id=username)
 
             return Response({'success': 'User found','user_id':get_user_data.user_id,
-                             'organization_id':get_user_data.organization_id,
+                             'organization_name':get_user_data.organization_id,
                              'full_name':get_user_data.full_name,
                              'user_picture':get_user_data.user_picture,
                              'birth_date':get_user_data.birth_date,
