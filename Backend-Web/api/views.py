@@ -101,26 +101,38 @@ class User_Complain_Registration(APIView):
         
 class Get_User_Profile(APIView):
 
-    def get(self,request):
+    def get(self,request,user_id):
 
         #get user profile and id
-        current_user=request.user
-        username=current_user.username
-        print(f"The username is {username}")
+        # current_user=request.user
+        # username=current_user.username
+        # print(f"The username is {username}")
 
         try:
-            get_user_data=Parent_organization_users.objects.get(user_id=username)
+            get_user_data=Parent_organization_users.objects.get(user_id=user_id)
+            username=get_user_data.user_id
+            organization_name=get_user_data.organization_id.name
+            full_name=get_user_data.full_name
+            user_picture='/media_files/'+str(get_user_data.user_picture)
+            birth_date=get_user_data.birth_date
+            contact_no=get_user_data.contact_no
+            email_address=get_user_data.email_address
+            home_address=get_user_data.home_address
+            gender=get_user_data.gender
+            is_proctor=get_user_data.is_proctor
+            
 
-            return Response({'success': 'User found','user_id':get_user_data.user_id,
-                             'organization_name':get_user_data.organization_id,
-                             'full_name':get_user_data.full_name,
-                             'user_picture':get_user_data.user_picture,
-                             'birth_date':get_user_data.birth_date,
-                             'contact_no':get_user_data.contact_no,
-                             'email_address':get_user_data.email_address,
-                             'home_address':get_user_data.home_address,
-                             'gender':get_user_data.gender,
-                             'is_proctor':get_user_data.is_proctor
+            return Response({'success': 'User found',
+                             'user_id':username,
+                             'organization_name':organization_name,
+                             'full_name':full_name,
+                             'user_picture':user_picture,
+                             'birth_date':birth_date,
+                             'contact_no':contact_no,
+                             'email_address':email_address,
+                             'home_address':home_address,
+                             'gender':gender,
+                             'is_proctor':is_proctor,
                              }, status=status.HTTP_202_ACCEPTED)
         
         except:

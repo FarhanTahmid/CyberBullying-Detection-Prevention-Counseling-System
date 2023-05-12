@@ -6,6 +6,7 @@ import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:bullishield/user.dart';
+import 'package:bullishield/user.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
