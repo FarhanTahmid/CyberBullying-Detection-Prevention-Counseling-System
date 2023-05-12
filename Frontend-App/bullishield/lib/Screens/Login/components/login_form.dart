@@ -6,7 +6,7 @@ import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:bullishield/user.dart';
-import 'package:bullishield/user.dart';
+import 'package:bullishield/backend.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
@@ -19,13 +19,14 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   // Defining Controller
-
   final userIdController = TextEditingController();
   final passwordController = TextEditingController();
-  var logged_in = false;
+
+  // Defining URLS
 
   void login() async {
     String loginUrl = "http://127.0.0.1:8000/apis/login/";
+
     try {
       var response = await http.post(Uri.parse(loginUrl), body: {
         'username': userIdController.text.trim(),
@@ -33,6 +34,17 @@ class LoginFormState extends State<LoginForm> {
       });
 
       if ((response.statusCode) == 202) {
+        // get user details via the api
+        var userDataURL = (Backend.backendMeta) +
+            'apis/user_details/' +
+            userIdController.text.trim();
+        var getUserData = await http.get(Uri.parse(userDataURL));
+        var status = getUserData.statusCode;
+        if (getUserData.statusCode == 202) {
+          // set user variable
+          
+        }
+
         Fluttertoast.showToast(
           msg: "Login Successful",
           toastLength: Toast.LENGTH_SHORT,
@@ -44,10 +56,7 @@ class LoginFormState extends State<LoginForm> {
         );
         //TODO:
         //go to backends and get user information on arguments, fix api
-        //get response from the api and initialize and test users
-        
-
-
+        //get response from the api and initialize and test 6s
 
         // var get_user_info
         // User current_user = User();
