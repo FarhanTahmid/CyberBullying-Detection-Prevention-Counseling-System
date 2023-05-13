@@ -2,13 +2,12 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bullishield/user.dart';
 
 class MyDrawer extends StatelessWidget {
   void getUserdata() async {
-    String user_data_url = "http://127.0.0.1:8000/apis/user_details/";
-
-    var response = await http.get(Uri.parse(user_data_url));
-    print(response.statusCode);
+    var userName = User().user_id;
+    print(userName);
   }
 
   @override
@@ -26,7 +25,7 @@ class MyDrawer extends StatelessWidget {
               margin: EdgeInsets.zero,
               padding: EdgeInsets.zero,
               child: UserAccountsDrawerHeader(
-                  accountName: Text("Farhana Akbar"),
+                  accountName: Text("Farhana"),
                   accountEmail: Text("farhana.akbar@northsouth.edu"),
                   currentAccountPicture: CircleAvatar(
                     backgroundImage: NetworkImage(imageUrl),

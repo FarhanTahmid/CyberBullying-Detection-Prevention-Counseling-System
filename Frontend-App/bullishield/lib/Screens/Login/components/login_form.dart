@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bullishield/Screens/HomePage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,7 +43,20 @@ class LoginFormState extends State<LoginForm> {
         var getUserData = await http.get(Uri.parse(userDataURL));
         var status = getUserData.statusCode;
         if (getUserData.statusCode == 202) {
-          // set user variable
+          var userResponseData = jsonDecode(getUserData.body);
+
+          //Set the variables in User Class
+          var recentUser = User();
+          recentUser.user_id = userResponseData['user_id'];
+          recentUser.organization_name = userResponseData['organization_name'];
+          recentUser.full_name = userResponseData['full_name'];
+          recentUser.user_picture = userResponseData['user_picture'];
+          recentUser.birth_date = userResponseData['birth_date'];
+          recentUser.contact_no = userResponseData['contact_no'];
+          recentUser.email_address = userResponseData['email_address'];
+          recentUser.home_address = userResponseData['home_address'];
+          recentUser.gender = userResponseData['gender'];
+          recentUser.is_proctor = userResponseData['is_proctor'];
           
         }
 
