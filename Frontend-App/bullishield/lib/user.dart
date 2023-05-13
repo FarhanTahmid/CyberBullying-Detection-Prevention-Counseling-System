@@ -3,29 +3,29 @@ import 'dart:ffi';
 class User {
   //private final variables
 
-  String _user_id;
-  String _organization_name;
-  String _full_name;
-  String _user_picture;
-  String _birth_date;
-  String _contact_no;
-  String _email_address;
-  String _home_address;
-  String _gender;
-  Bool _is_proctor;
+  String _user_id='';
+  String _organization_name='';
+  String _full_name='';
+  String _user_picture='';
+  String _birth_date='';
+  String _contact_no='';
+  String _email_address='';
+  String _home_address='';
+  String _gender='';
+  bool _is_proctor=false;
 
   //Constructor
-  User(
-      this._user_id,
-      this._organization_name,
-      this._full_name,
-      this._user_picture,
-      this._birth_date,
-      this._contact_no,
-      this._email_address,
-      this._home_address,
-      this._gender,
-      this._is_proctor);
+  // User(
+  //     this._user_id,
+  //     this._organization_name,
+  //     this._full_name,
+  //     this._user_picture,
+  //     this._birth_date,
+  //     this._contact_no,
+  //     this._email_address, 
+  //     this._home_address,
+  //     this._gender,
+  //     this._is_proctor);
 
   //getter methods
 
@@ -38,7 +38,7 @@ class User {
   String get email_address => _email_address;
   String get home_address => _home_address;
   String get gender => _gender;
-  Bool get is_proctor => _is_proctor;
+  bool get is_proctor => _is_proctor;
 
   //Setter Methods
   set user_id(String user_id) {
@@ -78,7 +78,7 @@ class User {
     _gender = gender;
   }
 
-  set is_proctor(Bool proctor){
+  set is_proctor(bool proctor){
     _is_proctor = proctor;
   }
 
