@@ -39,15 +39,5 @@ class ListWidget extends StatelessWidget {
         ),
       ),
     );
-
-    ButtonBar(
-      buttonPadding: EdgeInsets.zero,
-      children: [
-        ElevatedButton(
-          onPressed: () {},
-          child: "Add".text.make(),
-        )
-      ],
-    );
   }
 }
