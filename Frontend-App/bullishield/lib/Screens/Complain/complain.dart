@@ -1,3 +1,5 @@
+
+
 class Complains {
   final int id;
   final String title;
@@ -12,13 +14,11 @@ class Complains {
 }
 
 class ComplainModel {
- 
   static final list = [
-  Complains(
-      id: 01,
-      title: "Complain-01",
-      status: "Processing",
-      details: "Campus harassment complain agianst ID: 2031458642")
-];
- 
+    Complains(
+        id: 01,
+        title: "Complain-01",
+        status: "Processing",
+        details: "Campus harassment complain agianst ID: 2031458642")
+  ];
 }

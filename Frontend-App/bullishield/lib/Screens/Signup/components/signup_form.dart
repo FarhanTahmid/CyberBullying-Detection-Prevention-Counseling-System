@@ -23,33 +23,30 @@ class SignupFormState extends State<SignUpForm> {
   void signup() async {
     var response;
 
-      // first check if two password matches
-      if (password_controller.text.trim() ==
-          confirm_password_controller.text.trim()) {
-        var signup_url = "http://127.0.0.1:8000/apis/signup/";
-        // Posting response to backend server
-        response = await http.post(Uri.parse(signup_url), body: {
-          'username': user_id_controller.text.trim(),
-          'password': password_controller.text.trim(),
-          'email': email_controller.text.trim()
-        });
-      } else {
-        print("Password Mismatch");
-      }
+    // first check if two password matches
+    if (password_controller.text.trim() ==
+        confirm_password_controller.text.trim()) {
+      var signup_url = "http://127.0.0.1:8000/apis/signup/";
+      // Posting response to backend server
+      response = await http.post(Uri.parse(signup_url), body: {
+        'username': user_id_controller.text.trim(),
+        'password': password_controller.text.trim(),
+        'email': email_controller.text.trim()
+      });
+    } else {
+      print("Password Mismatch");
+    }
 
-      // Have to show Toast here
-      if ((response.statusCode) == 400) {
-        print("Username already exists");
-      } 
-      else if ((response.statusCode) == 201) {
-        print("Created");
-      }else if ((response.statusCode) == 205) {
-        print("Username does not exist in database");
-      }
-      else {
-        print("No connection");
-      }
-    
+    // Have to show Toast here
+    if ((response.statusCode) == 400) {
+      print("Username already exists");
+    } else if ((response.statusCode) == 201) {
+      print("Created");
+    } else if ((response.statusCode) == 205) {
+      print("Username does not exist in database");
+    } else {
+      print("No connection");
+    }
   }
 
   @override

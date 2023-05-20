@@ -3,6 +3,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Screens/AddMore/addnewcomplain.dart';
+
 class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -61,6 +63,23 @@ class MyDrawer extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.purple.shade900,
                 ),
+              ),
+            ),
+            ListTile(
+              leading: ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ComplainForm();
+                    },
+                  );
+                },
+                child: Text("Add New Complain",
+                    textScaleFactor: 1.5,
+                    style: TextStyle(
+                      color: Colors.purple.shade100,
+                    )),
               ),
             )
           ],
