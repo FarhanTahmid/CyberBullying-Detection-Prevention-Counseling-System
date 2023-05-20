@@ -1,9 +1,14 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:bullishield/Screens/HomePage/homepage.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:bullishield/user.dart';
+import 'package:bullishield/backend.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
@@ -16,25 +21,98 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   // Defining Controller
-
   final userIdController = TextEditingController();
   final passwordController = TextEditingController();
 
+  // Defining URLS
+
   void login() async {
-    var response;
     String loginUrl = "http://127.0.0.1:8000/apis/login/";
 
-    response = await http.post(Uri.parse(loginUrl), body: {
-      'username': userIdController.text.trim(),
-      'password': passwordController.text.trim(),
-    });
-    print(response.statusCode);
-    if ((response.statusCode) == 202) {
-      print("Logged in Successfully");
-    } else if ((response.statusCode) == 401) {
-      print("Login Failed");
-    } else {
-      print("onno");
+    try {
+      var response = await http.post(Uri.parse(loginUrl), body: {
+        'username': userIdController.text.trim(),
+        'password': passwordController.text.trim(),
+      });
+
+      if ((response.statusCode) == 202) {
+        // get user details via the api
+        var userDataURL = (Backend.backendMeta) +
+            'apis/user_details/' +
+            userIdController.text.trim();
+        var getUserData = await http.get(Uri.parse(userDataURL));
+        var status = getUserData.statusCode;
+        if (getUserData.statusCode == 202) {
+          var userResponseData = jsonDecode(getUserData.body);
+
+          //Set the variables in User Class
+          var recentUser = User();
+          recentUser.user_id = userResponseData['user_id'];
+          recentUser.organization_name = userResponseData['organization_name'];
+          recentUser.full_name = userResponseData['full_name'];
+          recentUser.user_picture = userResponseData['user_picture'];
+          recentUser.birth_date = userResponseData['birth_date'];
+          recentUser.contact_no = userResponseData['contact_no'];
+          recentUser.email_address = userResponseData['email_address'];
+          recentUser.home_address = userResponseData['home_address'];
+          recentUser.gender = userResponseData['gender'];
+          recentUser.is_proctor = userResponseData['is_proctor'];
+          
+        }
+
+        Fluttertoast.showToast(
+          msg: "Login Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        //TODO:
+        //go to backends and get user information on arguments, fix api
+        //get response from the api and initialize and test 6s
+
+        // var get_user_info
+        // User current_user = User();
+        //Go to the homepage upon successful login
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else if ((response.statusCode) == 401) {
+        //show toast message upon unsuccessful login
+
+        Fluttertoast.showToast(
+          msg: "Wrong credentials! Try again!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.red,
+          fontSize: 16.0,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "Please check your network connection and Try again!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Please check your network connection and Try again!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[700],
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
 

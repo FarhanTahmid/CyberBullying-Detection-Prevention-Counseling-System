@@ -3,9 +3,21 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../widgets/list_widget.dart';
 import '../../widgets/nav.dart';
 import '../Complain/complain.dart';
+import '../../../constants.dart';
 
-class HomePage extends StatelessWidget {
+
+class HomePage extends StatefulWidget {
   final String name = "BulliSheild";
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
+  @override
+  State<HomePage>createState()=>HomePageState();
+}
+
+class HomePageState extends State<HomePage>{
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +27,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "BulliSheild",
-          textScaleFactor: 2.5,
+          textScaleFactor: 1.5,
         ),
       ),
       body: Padding(

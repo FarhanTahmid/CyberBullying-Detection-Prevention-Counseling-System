@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Login/login_screen.dart';
@@ -23,30 +24,78 @@ class SignupFormState extends State<SignUpForm> {
   void signup() async {
     var response;
 
-    // first check if two password matches
-    if (password_controller.text.trim() ==
-        confirm_password_controller.text.trim()) {
-      var signup_url = "http://127.0.0.1:8000/apis/signup/";
-      // Posting response to backend server
-      response = await http.post(Uri.parse(signup_url), body: {
-        'username': user_id_controller.text.trim(),
-        'password': password_controller.text.trim(),
-        'email': email_controller.text.trim()
-      });
-    } else {
-      print("Password Mismatch");
-    }
+      // first check if two password matches
+      if (password_controller.text.trim() ==
+          confirm_password_controller.text.trim()) {
+        var signup_url = "http://127.0.0.1:8000/apis/signup/";
+        // Posting response to backend server
+        try{
+            response = await http.post(Uri.parse(signup_url), body: {
+            'username': user_id_controller.text.trim(),
+            'password': password_controller.text.trim(),
+            'email': email_controller.text.trim()
+          });
+        }catch (e){
+          Fluttertoast.showToast(
+            msg: "Please check your network connection and Try again!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.grey[700],
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        }
+        
+      } else {
+        Fluttertoast.showToast(
+          msg: "Two passwords did not match",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.red,
+          fontSize: 16.0,
+        );
+      }
 
-    // Have to show Toast here
-    if ((response.statusCode) == 400) {
-      print("Username already exists");
-    } else if ((response.statusCode) == 201) {
-      print("Created");
-    } else if ((response.statusCode) == 205) {
-      print("Username does not exist in database");
-    } else {
-      print("No connection");
-    }
+      // Have to show Toast here
+      if ((response.statusCode) == 400) {
+        Fluttertoast.showToast(
+          msg: "This username already exists! Try logging in",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.red,
+          fontSize: 16.0,
+        );
+      } 
+      else if ((response.statusCode) == 201) {
+        Fluttertoast.showToast(
+          msg: "Signed up successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.red,
+          fontSize: 16.0,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      }else if ((response.statusCode) == 205) {
+        Fluttertoast.showToast(
+          msg: "This username does not exist in our database. Please contact your organization administration",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.red,
+          fontSize: 16.0,
+        );
+      }
   }
 
   @override

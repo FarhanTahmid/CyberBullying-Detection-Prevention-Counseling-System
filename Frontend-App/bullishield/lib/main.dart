@@ -4,17 +4,20 @@ import 'package:bullishield/Screens/HomePage/homepage.dart';
 import 'package:bullishield/Screens/Login/components/login_form.dart';
 import 'package:bullishield/Screens/Login/login_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bullishield/constants.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       title: 'BulliBlock',
       themeMode: ThemeMode.light,
@@ -50,7 +53,7 @@ class MyApp extends StatelessWidget {
           )),
       debugShowCheckedModeBanner: false,
       routes: {
-        "/": (context) => HomePage(),
+        "/": (context) => LoginScreen(),
       },
     );
   }

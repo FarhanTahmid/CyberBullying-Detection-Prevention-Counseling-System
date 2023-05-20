@@ -1,13 +1,20 @@
 // ignore_for_file: prefer_const_constructors
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bullishield/user.dart';
 
 import '../Screens/AddMore/addnewcomplain.dart';
 
 class MyDrawer extends StatelessWidget {
+  void getUserdata() async {
+    var userName = User().user_id;
+    print(userName);
+  }
+
   @override
   Widget build(BuildContext context) {
+    getUserdata();
     final imageUrl = "https://avatars.githubusercontent.com/u/96833618?v=4";
     return Drawer(
       child: Container(
@@ -20,7 +27,7 @@ class MyDrawer extends StatelessWidget {
               margin: EdgeInsets.zero,
               padding: EdgeInsets.zero,
               child: UserAccountsDrawerHeader(
-                  accountName: Text("Farhana Akbar"),
+                  accountName: Text("Farhana"),
                   accountEmail: Text("farhana.akbar@northsouth.edu"),
                   currentAccountPicture: CircleAvatar(
                     backgroundImage: NetworkImage(imageUrl),

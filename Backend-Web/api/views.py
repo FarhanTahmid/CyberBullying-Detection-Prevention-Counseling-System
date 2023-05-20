@@ -5,6 +5,7 @@ from django.contrib.auth.models import User,auth
 from application_users.models import Parent_organization_users
 from user_complains.models import User_Complains
 from parent_organization.models import Parent_organization
+from user_complains.models import User_Complains
 from django.contrib.auth.hashers import make_password
 
 
@@ -48,11 +49,22 @@ class Login(APIView):
         else:
             return Response({'error': 'Login unsuccessful'}, status=status.HTTP_401_UNAUTHORIZED)
 
+class User_Authentication(APIView):
+    
+    def get(self,request):
+        
+        user=request.user
+        if(user.is_authenticated):
+            return Response({'success': 'User authenticated'}, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+            
+
 class User_Complain_Registration(APIView):
     
     def post(self,request):
         data=request.data
-        
         #get the current user
         current_user=request.user
         complainee_id=current_user.username
@@ -89,27 +101,40 @@ class User_Complain_Registration(APIView):
         
 class Get_User_Profile(APIView):
 
-    def get(self,request):
+    def get(self,request,user_id):
 
         #get user profile and id
-        current_user=request.user
-        username=current_user.username
+        # current_user=request.user
+        # username=current_user.username
+        # print(f"The username is {username}")
 
         try:
-            get_user_data=Parent_organization_users.objects.get(user_id=username)
+            get_user_data=Parent_organization_users.objects.get(user_id=user_id)
+            username=get_user_data.user_id
+            organization_name=get_user_data.organization_id.name
+            full_name=get_user_data.full_name
+            user_picture='/media_files/'+str(get_user_data.user_picture)
+            birth_date=get_user_data.birth_date
+            contact_no=get_user_data.contact_no
+            email_address=get_user_data.email_address
+            home_address=get_user_data.home_address
+            gender=get_user_data.gender
+            is_proctor=get_user_data.is_proctor
+            
 
-            return Response({'success': 'User found','user_id':get_user_data.user_id,
-                             'organization_id':get_user_data.organization_id,
-                             'full_name':get_user_data.full_name,
-                             'user_picture':get_user_data.user_picture,
-                             'birth_date':get_user_data.birth_date,
-                             'contact_no':get_user_data.contact_no,
-                             'email_address':get_user_data.email_address,
-                             'home_address':get_user_data.home_address,
-                             'gender':get_user_data.gender,
-                             'is_proctor':get_user_data.is_proctor
-                             }, status=status.HTTP_302_FOUND)
-
+            return Response({'success': 'User found',
+                             'user_id':username,
+                             'organization_name':organization_name,
+                             'full_name':full_name,
+                             'user_picture':user_picture,
+                             'birth_date':birth_date,
+                             'contact_no':contact_no,
+                             'email_address':email_address,
+                             'home_address':home_address,
+                             'gender':gender,
+                             'is_proctor':is_proctor,
+                             }, status=status.HTTP_202_ACCEPTED)
+        
         except:
             return Response({'error': 'User not found'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -119,10 +144,23 @@ class Details_of_complains_Lodged_by_user(APIView):
         current_user=request.user
         user_id=current_user.username
 
+        get_complains=User_Complains.objects.get(complainee_id=user_id).all()
+
+        return Response({'success': 'Complains loaded',
+                         'complains':get_complains}
+                         , status=status.HTTP_302_FOUND)
+
+
+
+
+
+class User_Profile_Data(APIView):
+    
+    def get(self,request,username):
         
-
-
-
+        user_details=Parent_organization_users.objects.get(user_id=username)
+        print(user_details)
+        return Response({'success':'Got data','username':user_details.full_name},status=status.HTTP_202_ACCEPTED)
 
 
         
