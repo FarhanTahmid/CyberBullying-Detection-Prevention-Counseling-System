@@ -1,6 +1,8 @@
+import 'dart:io';
+
+import 'package:bullishield/widgets/nav.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import '../Complain/complain.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ComplainForm extends StatefulWidget {
   @override
@@ -13,6 +15,19 @@ class _ComplainFormState extends State<ComplainForm> {
   TextEditingController _bullyNameController = TextEditingController();
   TextEditingController _bullyIdController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
+  List<File> _images = [];
+
+  Future<void> _getImages() async {
+    final picker = ImagePicker();
+    final pickedImages = await picker.pickMultiImage();
+
+    if (pickedImages != null) {
+      setState(() {
+        _images =
+            pickedImages.map((pickedImage) => File(pickedImage.path)).toList();
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -57,8 +72,58 @@ class _ComplainFormState extends State<ComplainForm> {
             ),
             SizedBox(height: 20),
             Text('Proofs', style: TextStyle(fontSize: 18)),
-            // Add your implementation for uploading images
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _images.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Image.file(
+                            _images[index],
+                            height: 80,
+                            width: 80,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                GestureDetector(
+                  onTap: _getImages,
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.camera_alt,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height: 20),
+            Text('Description', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 10),
             TextFormField(
               controller: _descriptionController,
               decoration: InputDecoration(
@@ -87,7 +152,9 @@ class _ComplainFormState extends State<ComplainForm> {
             _bullyNameController.clear();
             _bullyIdController.clear();
             _descriptionController.clear();
-
+            setState(() {
+              _images = []; // Clear the selected images
+            });
             // Close the form
             Navigator.of(context).pop();
           },
@@ -103,34 +170,4 @@ class _ComplainFormState extends State<ComplainForm> {
       ],
     );
   }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return ComplainForm();
-              },
-            );
-          },
-          child: Text('Open Complain Form'),
-        ),
-      ),
-    );
-  }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: HomePage(),
-  ));
 }

@@ -1,10 +1,14 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:bullishield/Screens/HomePage/homepage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bullishield/user.dart';
 
 import '../Screens/AddMore/addnewcomplain.dart';
+import '../Screens/NavScreens/ChatBotScreen.dart';
+import '../Screens/NavScreens/NotificationScreen.dart';
+import '../Screens/NavScreens/ProfileScreen.dart';
 
 class MyDrawer extends StatelessWidget {
   void getUserdata() async {
@@ -34,6 +38,16 @@ class MyDrawer extends StatelessWidget {
                   )),
             ),
             ListTile(
+              onTap: () {
+                // Add your desired action here
+                // For example, navigate to the Home screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
+              },
               leading: Icon(
                 CupertinoIcons.home,
                 color: Colors.purple.shade900,
@@ -47,6 +61,16 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
+              onTap: () {
+                // Add your desired action here
+                // For example, navigate to the Profile screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(),
+                  ),
+                );
+              },
               leading: Icon(
                 CupertinoIcons.profile_circled,
                 color: Colors.purple.shade900,
@@ -59,16 +83,53 @@ class MyDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.bell_circle,
-                color: Colors.purple.shade900,
-              ),
-              title: Text(
-                "Notifications",
-                textScaleFactor: 1.2,
-                style: TextStyle(
+            GestureDetector(
+              onTap: () {
+                // Add your desired action here
+                // For example, navigate to the Notifications screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NotificationScreen(),
+                  ),
+                );
+              },
+              child: ListTile(
+                leading: Icon(
+                  CupertinoIcons.bell_circle,
                   color: Colors.purple.shade900,
+                ),
+                title: Text(
+                  "Notifications",
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    color: Colors.purple.shade900,
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Add your desired action here
+                // For example, navigate to the Notifications screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatBotScreen(),
+                  ),
+                );
+              },
+              child: ListTile(
+                leading: Icon(
+                  CupertinoIcons.chat_bubble,
+                  color: Colors.purple.shade900,
+                ),
+                title: Text(
+                  "Talk to ChatBot",
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    color: Colors.purple.shade900,
+                  ),
                 ),
               ),
             ),
@@ -78,15 +139,22 @@ class MyDrawer extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return ComplainForm();
+                      return Dialog(
+                        child: Container(
+                          padding: EdgeInsets.all(16.0),
+                          child: ComplainForm(),
+                        ),
+                      );
                     },
                   );
                 },
-                child: Text("Add New Complain",
-                    textScaleFactor: 1.5,
-                    style: TextStyle(
-                      color: Colors.purple.shade100,
-                    )),
+                child: Text(
+                  "Add New Complain",
+                  textScaleFactor: 1.5,
+                  style: TextStyle(
+                    color: Colors.purple.shade100,
+                  ),
+                ),
               ),
             )
           ],
