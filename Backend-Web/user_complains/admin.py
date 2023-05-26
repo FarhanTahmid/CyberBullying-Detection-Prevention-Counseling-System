@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import User_Complains,Complain_types
+from . models import User_Complains,Complain_types,JustToTest
 # Register your models here.
 
 @admin.register(Complain_types)
@@ -11,3 +11,10 @@ class User_Complains(admin.ModelAdmin):
     '''Registering user complains in django admin panel'''
     list_display=['complainee_id','organization_id','complain_type','bully_name',
                   'incident_date','complain_status','bully_guilty']
+
+@admin.register(JustToTest)
+class Test(admin.ModelAdmin):
+    list_display=[
+        'proofName',
+        'proof_to_text'
+    ]
