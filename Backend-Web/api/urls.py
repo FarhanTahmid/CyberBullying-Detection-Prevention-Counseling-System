@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Signup,Login,User_Authentication,User_Complain_Registration,Get_User_Profile
+from .views import Signup,Login,User_Authentication,User_Complain_Registration,Get_User_Profile,TestImagetoText
 
 app_name='api'
 
@@ -9,5 +9,6 @@ urlpatterns = [
     path('authentication/',User_Authentication.as_view(),name='authentication'),
     path('complain_reg/',User_Complain_Registration.as_view(),name='complain_reg'),
     path('user_details/<str:user_id>',Get_User_Profile.as_view(),name='user_details'),
+    path('test_image',TestImagetoText.as_view(),name="image_to_text")
        
 ]
