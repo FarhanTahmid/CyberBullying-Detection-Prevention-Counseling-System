@@ -7,6 +7,8 @@ from user_complains.models import User_Complains
 from parent_organization.models import Parent_organization
 from user_complains.models import User_Complains
 from django.contrib.auth.hashers import make_password
+import pytesseract
+from PIL import Image
 
 
 class Signup(APIView):
@@ -161,6 +163,21 @@ class User_Profile_Data(APIView):
         user_details=Parent_organization_users.objects.get(user_id=username)
         print(user_details)
         return Response({'success':'Got data','username':user_details.full_name},status=status.HTTP_202_ACCEPTED)
+    
 
+class TestImagetoText(APIView):
+    def post(self,request,*args,**kwargs):
+        
+        data=request.data
+        image_file=data.get('image')
+        print(image_file)
+        image=Image.open(image_file)
+        pytesseract.pytesseract.tesseract_cmd = r'F:\Tesseract\tesseract.exe'
+        text=pytesseract.image_to_string(image=image)
+        print(text)
+        return Response({'success':'Got data','text':text},status=status.HTTP_202_ACCEPTED)
+     
+        
+       
 
         

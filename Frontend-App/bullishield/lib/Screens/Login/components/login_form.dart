@@ -27,8 +27,9 @@ class LoginFormState extends State<LoginForm> {
   // Defining URLS
 
   void login() async {
-    String loginUrl = "http://127.0.0.1:8000/apis/login/";
-
+    Backend backend = Backend();
+    String backendMeta = backend.backendMeta;
+    String loginUrl = "$backendMeta/apis/login/";
     try {
       var response = await http.post(Uri.parse(loginUrl), body: {
         'username': userIdController.text.trim(),
@@ -37,9 +38,8 @@ class LoginFormState extends State<LoginForm> {
 
       if ((response.statusCode) == 202) {
         // get user details via the api
-        var userDataURL = (Backend.backendMeta) +
-            'apis/user_details/' +
-            userIdController.text.trim();
+        var userDataURL =
+            (backendMeta) + '/apis/user_details/' + userIdController.text.trim();
         var getUserData = await http.get(Uri.parse(userDataURL));
         var status = getUserData.statusCode;
         if (getUserData.statusCode == 202) {
@@ -57,7 +57,6 @@ class LoginFormState extends State<LoginForm> {
           recentUser.home_address = userResponseData['home_address'];
           recentUser.gender = userResponseData['gender'];
           recentUser.is_proctor = userResponseData['is_proctor'];
-          
         }
 
         Fluttertoast.showToast(
