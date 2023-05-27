@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:bullishield/user.dart';
 
 import '../Screens/AddMore/addnewcomplain.dart';
+import '../Screens/Login/login_screen.dart';
 import '../Screens/NavScreens/ChatBotScreen.dart';
+import '../Screens/NavScreens/ComplainFormScreen.dart';
 import '../Screens/NavScreens/NotificationScreen.dart';
 import '../Screens/NavScreens/ProfileScreen.dart';
+import 'complain_form.dart';
 
 class MyDrawer extends StatelessWidget {
   void getUserdata() async {
@@ -49,7 +52,7 @@ class MyDrawer extends StatelessWidget {
                 );
               },
               leading: Icon(
-                CupertinoIcons.home,
+                CupertinoIcons.house_fill,
                 color: Colors.purple.shade900,
               ),
               title: Text(
@@ -96,7 +99,7 @@ class MyDrawer extends StatelessWidget {
               },
               child: ListTile(
                 leading: Icon(
-                  CupertinoIcons.bell_circle,
+                  CupertinoIcons.bell_circle_fill,
                   color: Colors.purple.shade900,
                 ),
                 title: Text(
@@ -121,7 +124,7 @@ class MyDrawer extends StatelessWidget {
               },
               child: ListTile(
                 leading: Icon(
-                  CupertinoIcons.chat_bubble,
+                  CupertinoIcons.chat_bubble_2_fill,
                   color: Colors.purple.shade900,
                 ),
                 title: Text(
@@ -133,30 +136,56 @@ class MyDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            ListTile(
-              leading: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        child: Container(
-                          padding: EdgeInsets.all(16.0),
-                          child: ComplainForm(),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Text(
+            GestureDetector(
+              onTap: () {
+                // Add your desired action here
+                // For example, navigate to the Notifications screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ComplainFormScreen(),
+                  ),
+                );
+              },
+              child: ListTile(
+                leading: Icon(
+                  CupertinoIcons.add_circled_solid,
+                  color: Colors.purple.shade900,
+                ),
+                title: Text(
                   "Add New Complain",
-                  textScaleFactor: 1.5,
+                  textScaleFactor: 1.2,
                   style: TextStyle(
-                    color: Colors.purple.shade100,
+                    color: Colors.purple.shade900,
                   ),
                 ),
               ),
-            )
+            ),
+            GestureDetector(
+              onTap: () {
+                // Add your desired action here
+                // For example, navigate to the Notifications screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginScreen(),
+                  ),
+                );
+              },
+              child: ListTile(
+                leading: Icon(
+                  CupertinoIcons.eject_fill,
+                  color: Colors.purple.shade900,
+                ),
+                title: Text(
+                  "Logout",
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    color: Colors.purple.shade900,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
