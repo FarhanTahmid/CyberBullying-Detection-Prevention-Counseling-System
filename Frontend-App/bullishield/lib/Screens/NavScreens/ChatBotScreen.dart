@@ -1,6 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class ChatBotScreen extends StatelessWidget {
+class ChatBotScreen extends StatefulWidget {
+  @override
+  _ChatBotScreenState createState() => _ChatBotScreenState();
+}
+
+class _ChatBotScreenState extends State<ChatBotScreen> {
+  List<Message> messages = [];
+
+  TextEditingController _textEditingController = TextEditingController();
+
+  void sendMessage(String message) async {
+    setState(() {
+      messages.add(Message(sender: 'You', message: message));
+    });
+
+    // Make a request to the Bard API
+    final response = await http.post(
+      Uri.parse('YOUR_BARD_API_ENDPOINT'),
+      body: {'message': message},
+    );
+
+    if (response.statusCode == 200) {
+      String botResponse = response.body;
+
+      setState(() {
+        messages.add(Message(sender: 'Chat Bot', message: botResponse));
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,18 +65,14 @@ class ChatBotScreen extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: ListView(
-                        children: [
-                          MessageBubble(
-                            sender: 'Chat Bot',
-                            message: 'Hello! How can I assist you?',
-                          ),
-                          MessageBubble(
-                            sender: 'You',
-                            message: 'I have a question about the app.',
-                          ),
-                          // Add more message bubbles as needed
-                        ],
+                      child: ListView.builder(
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          return MessageBubble(
+                            sender: messages[index].sender,
+                            message: messages[index].message,
+                          );
+                        },
                       ),
                     ),
                     Container(
@@ -57,6 +83,7 @@ class ChatBotScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: TextField(
+                              controller: _textEditingController,
                               decoration: InputDecoration(
                                 hintText: 'Type your message...',
                                 border: OutlineInputBorder(),
@@ -66,7 +93,11 @@ class ChatBotScreen extends StatelessWidget {
                           SizedBox(width: 10),
                           ElevatedButton(
                             onPressed: () {
-                              // Send the message
+                              String message = _textEditingController.text;
+                              if (message.isNotEmpty) {
+                                sendMessage(message);
+                                _textEditingController.clear();
+                              }
                             },
                             child: Text('Send'),
                           ),
@@ -82,6 +113,13 @@ class ChatBotScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class Message {
+  final String sender;
+  final String message;
+
+  Message({required this.sender, required this.message});
 }
 
 class MessageBubble extends StatelessWidget {

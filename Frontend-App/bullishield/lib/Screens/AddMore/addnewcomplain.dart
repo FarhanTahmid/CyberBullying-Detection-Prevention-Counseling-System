@@ -29,6 +29,10 @@ class _ComplainFormState extends State<ComplainForm> {
     }
   }
 
+  void processComplain()async{
+    
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -137,14 +141,7 @@ class _ComplainFormState extends State<ComplainForm> {
       actions: [
         ElevatedButton(
           onPressed: () {
-            // Process the form data here
-            String name = _nameController.text;
-            String id = _idController.text;
-            String bullyName = _bullyNameController.text;
-            String bullyId = _bullyIdController.text;
-            String description = _descriptionController.text;
-
-            // Perform any desired action with the form data
+            //send data to the complain registration api
 
             // Clear the form fields
             _nameController.clear();
