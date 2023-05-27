@@ -9,6 +9,9 @@ from user_complains.models import User_Complains
 from django.contrib.auth.hashers import make_password
 import pytesseract
 from PIL import Image
+import requests
+from dotenv import load_dotenv
+import os
 
 
 class Signup(APIView):
@@ -176,6 +179,35 @@ class TestImagetoText(APIView):
         text=pytesseract.image_to_string(image=image)
         print(text)
         return Response({'success':'Got data','text':text},status=status.HTTP_202_ACCEPTED)
+
+
+
+
+class ChatBot(APIView):
+    load_dotenv()
+    api_key=os.environ.get('brainshop_ai_api_key')
+    
+    def get(self,request):
+        url = "https://acobot-brainshop-ai-v1.p.rapidapi.com/get"
+        querystring = {"bid":"178","key":"sX5A2PcYZbsN5EY6","uid":"mashape","msg":"hello"}
+
+        headers = {
+            "X-RapidAPI-Key": ChatBot.api_key,
+            "X-RapidAPI-Host": "acobot-brainshop-ai-v1.p.rapidapi.com"
+            }
+        response = requests.get(url, headers=headers)
+        print(response.json())
+        if response.status_code == 200:
+            return Response({'success':'Got data','brainshop':response},status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Not getting Bard'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # def post(self,request,*args,**kwargs):
+    #     data=request.data
+    #     chat=data['user_chat']
+        
+        
+
      
         
        
