@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:bullishield/backend.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,18 +18,21 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     setState(() {
       messages.add(Message(sender: 'You', message: message));
     });
-
+    var response;
     // Make a request to the Bard API
-    final response = await http.post(
-      Uri.parse('YOUR_BARD_API_ENDPOINT'),
-      body: {'message': message},
-    );
-
+    Backend backend = Backend();
+    String backendMeta = backend.backendMeta;
+    String chatbotUrl = "$backendMeta/apis/chatbot";
+    response =
+        await http.post(Uri.parse(chatbotUrl), body: {'user_message': message});
+    
     if (response.statusCode == 200) {
-      String botResponse = response.body;
-
+      final botResponse = jsonDecode(response.body);
+      
+      String botMessage = botResponse['ai_message'];
+      
       setState(() {
-        messages.add(Message(sender: 'Chat Bot', message: botResponse));
+        messages.add(Message(sender: 'Chat Bot', message: botMessage));
       });
     }
   }
