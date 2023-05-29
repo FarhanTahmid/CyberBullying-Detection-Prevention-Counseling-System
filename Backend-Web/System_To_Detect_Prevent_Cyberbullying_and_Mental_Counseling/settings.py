@@ -128,6 +128,9 @@ import os
 MEDIA_ROOT= os.path.join(BASE_DIR, 'User Files/')
 MEDIA_URL= "/media_files/"
 
+import openai
+OPENAI_API_KEY=os.environ.get('chat_gpt_api')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

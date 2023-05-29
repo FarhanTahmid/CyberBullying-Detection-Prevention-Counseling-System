@@ -12,6 +12,10 @@ from PIL import Image
 import requests
 from dotenv import load_dotenv
 import os
+import openai
+load_dotenv()
+openai.api_key=os.environ.get('chat_gpt_api')
+
 
 
 class Signup(APIView):
@@ -183,28 +187,60 @@ class TestImagetoText(APIView):
 
 
 
-class ChatBot(APIView):
-    load_dotenv()
-    api_key=os.environ.get('brainshop_ai_api_key')
-    
-    def get(self,request):
-        url = "https://acobot-brainshop-ai-v1.p.rapidapi.com/get"
-        querystring = {"bid":"178","key":"sX5A2PcYZbsN5EY6","uid":"mashape","msg":"hello"}
 
-        headers = {
-            "X-RapidAPI-Key": ChatBot.api_key,
-            "X-RapidAPI-Host": "acobot-brainshop-ai-v1.p.rapidapi.com"
-            }
-        response = requests.get(url, headers=headers)
-        print(response.json())
-        if response.status_code == 200:
-            return Response({'success':'Got data','brainshop':response},status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Not getting Bard'}, status=status.HTTP_400_BAD_REQUEST)
+class ChatBot(APIView):
     
-    # def post(self,request,*args,**kwargs):
-    #     data=request.data
-    #     chat=data['user_chat']
+    def post(self,request):
+        # if the session does not have a messages key, create one
+        if 'messages' not in request.session:
+            request.session['messages'] = [
+                {"role": "system", "content": "You are now chatting with a user, provide them with comprehensive, short and concise answers."},
+            ]
+        
+        if request.method == 'POST':
+            # get the prompt from the form
+            prompt = request.POST.get('user')
+            # get the temperature from the form
+            temperature = float(request.POST.get('temperature', 0.1))
+            # append the prompt to the messages list
+            request.session['messages'].append({"role": "user", "content": prompt})
+            # set the session as modified
+            request.session.modified = True
+            # call the openai API
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=request.session['messages'],
+                temperature=temperature,
+                max_tokens=100,
+            )
+            # format the response
+            formatted_response = response['choices'][0]['message']['content']
+            # append the response to the messages list
+            request.session['messages'].append({"role": "assistant", "content": formatted_response})
+            request.session.modified = True
+            # redirect to the home page
+            return Response({'success':'Got connection','ai':request.session['messages']},status=status.HTTP_200_OK)
+        
+        
+        # endpoint = 'https://api.openai.com/v1/engines/davinci/completions'
+        # headers = {
+        #     'Authorization': f'Bearer {openai.api_key}',
+        #     'Content-Type': 'application/json'
+        # }
+        # data = {
+        #     'prompt': user_message,
+        #     'max_tokens': 200
+        # }
+
+        # response = requests.post(endpoint, headers=headers, json=data)
+        # response.raise_for_status()
+
+        # json_response = response.json()
+        # ai_message = json_response['choices'][0]['text'].strip()
+        # if response.status_code == 200:
+        #     return Response({'success':'Got connection','ai':ai_message},status=status.HTTP_200_OK)
+        # else:
+        #     return Response({'error': 'Not getting ChatGPT'}, status=status.HTTP_400_BAD_REQUEST)
         
         
 
