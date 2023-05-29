@@ -41,7 +41,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Talk to ChatBot'),
+        title: Text('ChatBot'),
       ),
       body: Container(
         padding: EdgeInsets.all(16),
@@ -49,7 +49,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Feel Free Talking with ChatBot',
+              'Feel Free Talking To Our ChatBot',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 20),
