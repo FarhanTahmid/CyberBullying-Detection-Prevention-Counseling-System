@@ -16,6 +16,7 @@ class _ComplainFormState extends State<ComplainForm> {
   TextEditingController _bullyingDateTimeController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   List<File> _images = [];
+  List<File> _bullyImage = [];
   String? _selectedHarassmentType;
 
   Future<void> _getImages() async {
@@ -28,6 +29,34 @@ class _ComplainFormState extends State<ComplainForm> {
             pickedImages.map((pickedImage) => File(pickedImage.path)).toList();
       });
     }
+  }
+
+  Future<void> _getBullyImages() async {
+    final picker = ImagePicker();
+    final pickedImages = await picker.pickMultiImage();
+
+    if (pickedImages != null) {
+      setState(() {
+        _bullyImage =
+            pickedImages.map((pickedImage) => File(pickedImage.path)).toList();
+      });
+    }
+  }
+
+  void complainRegistration(
+      String name,
+      String id,
+      String bullyId,
+      String bullyName,
+      String bullyid,
+      String incidentDate,
+      String description,
+      String harrasmentType) async {
+    print(name);
+    print(id);
+    print(bullyId);
+    print(bullyName);
+    
   }
 
   @override
@@ -113,12 +142,12 @@ class _ComplainFormState extends State<ComplainForm> {
                 ),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: _images.length,
+                  itemCount: _bullyImage.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: EdgeInsets.all(4),
                       child: Image.file(
-                        _images[index],
+                        _bullyImage[index],
                         height: 100,
                         width: 100,
                         fit: BoxFit.cover,
@@ -129,7 +158,7 @@ class _ComplainFormState extends State<ComplainForm> {
               ),
               SizedBox(height: 20),
               GestureDetector(
-                onTap: _getImages,
+                onTap: _getBullyImages,
                 child: Container(
                   height: 100,
                   width: 100,
