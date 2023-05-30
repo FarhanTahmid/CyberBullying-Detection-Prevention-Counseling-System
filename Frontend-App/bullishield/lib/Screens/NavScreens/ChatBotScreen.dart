@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bullishield/backend.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class ChatBotScreen extends StatefulWidget {
@@ -34,6 +36,23 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
       setState(() {
         messages.add(Message(sender: 'Chat Bot', message: botMessage));
       });
+    }
+    else if(response.statusCode==400){
+      if(Platform.isAndroid){
+        Fluttertoast.showToast(
+          msg: "Please wait a moment and try again later!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }else if(Platform.isWindows){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Please wait a moment and try again later!"),
+          ));
+      }
     }
   }
 
