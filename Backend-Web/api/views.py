@@ -12,6 +12,10 @@ from PIL import Image
 import requests
 from dotenv import load_dotenv
 import os
+import openai
+load_dotenv()
+openai.api_key=os.environ.get('chat_gpt_api')
+
 
 
 class Signup(APIView):
@@ -184,29 +188,26 @@ class TestImagetoText(APIView):
 
 
 
-class ChatBot(APIView):
-    load_dotenv()
-    api_key=os.environ.get('brainshop_ai_api_key')
-    
-    def get(self,request):
-        url = "https://acobot-brainshop-ai-v1.p.rapidapi.com/get"
-        querystring = {"bid":"178","key":"sX5A2PcYZbsN5EY6","uid":"mashape","msg":"hello"}
 
-        headers = {
-            "X-RapidAPI-Key": ChatBot.api_key,
-            "X-RapidAPI-Host": "acobot-brainshop-ai-v1.p.rapidapi.com"
-            }
-        response = requests.get(url, headers=headers)
-        print(response.json())
-        if response.status_code == 200:
-            return Response({'success':'Got data','brainshop':response},status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Not getting Bard'}, status=status.HTTP_400_BAD_REQUEST)
+class ChatBot(APIView):
     
-    # def post(self,request,*args,**kwargs):
-    #     data=request.data
-    #     chat=data['user_chat']
+    def post(self,request):
         
+        data=request.data
+        user_prompt=data['user_message']
+        prompt=user_prompt
+        try:
+            response=openai.Completion.create(
+                engine='text-davinci-003',
+                prompt=prompt,
+                max_tokens=256,
+                temperature=0.7,
+            )
+            
+            return Response({'success':'Got chatGPT','ai_message':response["choices"][0]["text"]},status=status.HTTP_200_OK)
+        except:
+            return Response({'error': 'No chatGPT'}, status=status.HTTP_400_BAD_REQUEST)
+            
         
 
      
