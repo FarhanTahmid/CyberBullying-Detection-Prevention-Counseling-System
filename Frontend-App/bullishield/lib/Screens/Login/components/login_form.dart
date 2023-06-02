@@ -9,6 +9,7 @@ import '../../Signup/signup_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:bullishield/user.dart';
 import 'package:bullishield/backend.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
@@ -24,12 +25,18 @@ class LoginFormState extends State<LoginForm> {
   final userIdController = TextEditingController();
   final passwordController = TextEditingController();
 
-  // Defining URLS
+  // Storing the token
+  Future<void> storeToken(String token, String username) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    await prefs.setString('username', username);
+  }
 
   void login() async {
     Backend backend = Backend();
     String backendMeta = backend.backendMeta;
     String loginUrl = "$backendMeta/apis/login/";
+    var recentUser = User();
     try {
       var response = await http.post(Uri.parse(loginUrl), body: {
         'username': userIdController.text.trim(),
@@ -38,8 +45,7 @@ class LoginFormState extends State<LoginForm> {
 
       if ((response.statusCode) == 202) {
         var data = jsonDecode(response.body);
-        print(data);
-
+        String userAuthToken = data['token'];
         // get user details via the api
         var userDataURL = (backendMeta) +
             '/apis/user_details/' +
@@ -50,7 +56,7 @@ class LoginFormState extends State<LoginForm> {
           var userResponseData = jsonDecode(getUserData.body);
 
           //Set the variables in User Class
-          var recentUser = User();
+
           recentUser.user_id = userResponseData['user_id'];
           recentUser.organization_name = userResponseData['organization_name'];
           recentUser.full_name = userResponseData['full_name'];
@@ -62,13 +68,12 @@ class LoginFormState extends State<LoginForm> {
           recentUser.gender = userResponseData['gender'];
           recentUser.is_proctor = userResponseData['is_proctor'];
         }
-        if(Platform.isWindows){
-
-          
-
-        }
-        if(Platform.isAndroid){
-            Fluttertoast.showToast(
+        if (Platform.isWindows) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Login Successful!"),
+          ));
+        } else if (Platform.isAndroid) {
+          Fluttertoast.showToast(
             msg: "Login Successful",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -78,7 +83,7 @@ class LoginFormState extends State<LoginForm> {
             fontSize: 16.0,
           );
         }
-        
+
         //TODO:
         //go to backends and get user information on arguments, fix api
         //get response from the api and initialize and test 6s
@@ -88,10 +93,18 @@ class LoginFormState extends State<LoginForm> {
         //Go to the homepage upon successful login
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    currentUser: recentUser,
+                  )),
         );
       } else if ((response.statusCode) == 401) {
         //show toast message upon unsuccessful login
+        if(Platform.isWindows){
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Login Wrong credentials! Try again!"),
+          ));
+        }
 
         Fluttertoast.showToast(
           msg: "Wrong credentials! Try again!",
@@ -114,6 +127,11 @@ class LoginFormState extends State<LoginForm> {
         );
       }
     } catch (e) {
+      if (Platform.isWindows) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Please check your network connection and Try again!"),
+        ));
+      }
       Fluttertoast.showToast(
         msg: "Please check your network connection and Try again!",
         toastLength: Toast.LENGTH_SHORT,

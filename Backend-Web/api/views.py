@@ -1,6 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User,auth
@@ -62,14 +66,13 @@ class Login(APIView):
 
 class User_Authentication(APIView):
     
-    def get(self,request):
-        
-        user=request.user
-        if(user.is_authenticated):
-            return Response({'success': 'User authenticated'}, status=status.HTTP_202_ACCEPTED)
-        else:
-            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-        
+    @api_view(['GET'])
+    @authentication_classes([TokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def get(request):
+        authenticated = True
+        # Perform any additional checks or operations here
+        return Response({'authenticated': authenticated}, status=status.HTTP_200_OK)
             
 
 class User_Complain_Registration(APIView):

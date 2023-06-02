@@ -37,6 +37,8 @@ dependencies:
   velocity_x: ^3.6.0
   fluttertoast: ^8.2.1
   flutter_datetime_picker: ^1.5.1
+  shared_preferences: ^2.0.11
+
 
 
 

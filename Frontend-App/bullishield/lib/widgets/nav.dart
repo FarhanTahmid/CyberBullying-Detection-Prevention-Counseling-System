@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:ui';
+
 import 'package:bullishield/Screens/HomePage/homepage.dart';
+import 'package:bullishield/backend.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +16,37 @@ import '../Screens/NavScreens/NotificationScreen.dart';
 import '../Screens/NavScreens/ProfileScreen.dart';
 import 'complain_form.dart';
 
-class MyDrawer extends StatelessWidget {
-  void getUserdata() async {
-    var userName = User().user_id;
-    print(userName);
+class MyDrawer extends StatefulWidget {
+  final User currentUser;
+
+  const MyDrawer({Key? key, required this.currentUser}) : super(key: key);
+  @override
+  State<MyDrawer> createState() => MyDrawerState();
+}
+
+class MyDrawerState extends State<MyDrawer> {
+  String username = '';
+  String email = '';
+
+  String userImageUrl = '';
+
+  void getUserDetails() {
+    Backend backend = Backend();
+    String backendMeta = backend.backendMeta;
+    User currentUser = widget.currentUser;
+    username = currentUser.full_name;
+    email = currentUser.email_address;
+    userImageUrl = currentUser.user_picture;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserDetails();
   }
 
   @override
   Widget build(BuildContext context) {
-    getUserdata();
-    final imageUrl = "https://avatars.githubusercontent.com/u/96833618?v=4";
     return Drawer(
       child: Container(
         color: Colors.purple.shade100,
@@ -34,22 +58,15 @@ class MyDrawer extends StatelessWidget {
               margin: EdgeInsets.zero,
               padding: EdgeInsets.zero,
               child: UserAccountsDrawerHeader(
-                  accountName: Text("Farhana"),
-                  accountEmail: Text("farhana.akbar@northsouth.edu"),
+                  accountName: Text(username),
+                  accountEmail: Text(email),
                   currentAccountPicture: CircleAvatar(
-                    backgroundImage: NetworkImage(imageUrl),
+                    backgroundImage: NetworkImage(userImageUrl),
                   )),
             ),
             ListTile(
               onTap: () {
-                // Add your desired action here
-                // For example, navigate to the Home screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ),
-                );
+                Navigator.pop(context);
               },
               leading: Icon(
                 CupertinoIcons.house_fill,

@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:bullishield/user.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../widgets/list_widget.dart';
 import '../../widgets/nav.dart';
 import '../Complain/complain.dart';
 import '../../../constants.dart';
 
-
 class HomePage extends StatefulWidget {
   final String name = "BulliSheild";
+  final User currentUser;
   const HomePage({
     Key? key,
+    required this.currentUser
   }) : super(key: key);
   @override
-  State<HomePage>createState()=>HomePageState();
+  State<HomePage> createState() => HomePageState();
+  
 }
 
-class HomePageState extends State<HomePage>{
-
-
-
+class HomePageState extends State<HomePage> {
+  User getCurrentUser(){
+    return widget.currentUser;
+  }
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-
+    User user=getCurrentUser();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -32,7 +35,6 @@ class HomePageState extends State<HomePage>{
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        
         child: (ComplainModel.list != null && ComplainModel.list.isNotEmpty)
             ? ListView.builder(
                 itemCount: ComplainModel.list.length,
@@ -44,7 +46,7 @@ class HomePageState extends State<HomePage>{
                 child: CircularProgressIndicator(),
               ),
       ),
-      drawer: MyDrawer(),
+      drawer: MyDrawer(currentUser:getCurrentUser()),
     );
   }
 }
