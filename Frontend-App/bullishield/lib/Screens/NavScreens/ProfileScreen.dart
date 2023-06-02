@@ -1,8 +1,17 @@
 import 'dart:io';
+import 'package:bullishield/backend.dart';
+import 'package:bullishield/user.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:velocity_x/velocity_x.dart';
 
 class ProfileScreen extends StatefulWidget {
+  final User currentUser;
+
+  const ProfileScreen({Key? key, required this.currentUser}) : super(key: key);
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -22,20 +31,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _parentNameController = TextEditingController();
   TextEditingController _parentPhoneController = TextEditingController();
 
+  void getUserDetails() {
+    User currentUser = widget.currentUser;
+    _nameController.text = currentUser.full_name;
+    _nsuIdController.text = currentUser.user_id;
+    _emailController.text = currentUser.email_address;
+    _phoneController.text = currentUser.contact_no;
+    _addressController.text = currentUser.home_address;
+  }
+
   @override
   void initState() {
     super.initState();
-    _nameController.text = 'Farhana Akbar';
-    _nsuIdController.text = '2012482042';
+
     _programController.text = 'Computer Science and Engineering';
     _cgpaController.text = '3.00';
     _creditController.text = '106';
-    _emailController.text = 'farhana.akbar@northsouth.edu';
-    _phoneController.text = '1234567890';
-    _addressController.text = 'NAC-SAC BRIDGE, NSU';
+
     _emergencyPhoneController.text = '01987654321';
     _parentNameController.text = 'Mr. Akbar';
     _parentPhoneController.text = '019876543210';
+    getUserDetails();
   }
 
   Future<void> _pickProfilePicture() async {
@@ -62,8 +78,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void _saveChanges() {
+  void _saveChanges() async {
     // Perform necessary actions to save the changes
+
+    Backend backend = Backend();
+    String backendMeta = backend.backendMeta;
+    User currentUser = widget.currentUser;
+    String userId = currentUser.user_id;
+    String profileInfoUpdateUrl = '$backendMeta/apis/user_details/$userId';
+
+    try {
+      var response = await http.post(Uri.parse(profileInfoUpdateUrl), body: {
+        'full_name': _nameController.text.trim(),
+        'email_address': _emailController.text.trim(),
+        'contact_no': _phoneController.text.trim(),
+        'home_address': _addressController.text.trim(),
+      });
+      if (response.statusCode == 200) {
+        currentUser.full_name = _nameController.text.trim();
+        currentUser.email_address = _emailController.text.trim();
+        currentUser.contact_no = _phoneController.text.trim();
+        currentUser.home_address = _addressController.text.trim();
+        
+        if (Platform.isWindows) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Profile Information Updated!"),
+          ));
+        } else if (Platform.isAndroid) {
+          Fluttertoast.showToast(
+            msg: "Profile Information Updated!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.grey[700],
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        }
+      } else if (response.statusCode == 400) {
+        if (Platform.isWindows) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Can not update profile information!"),
+          ));
+        } else if (Platform.isAndroid) {
+          Fluttertoast.showToast(
+            msg: "Can not update profile information!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.grey[700],
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        }
+      }
+    } catch (e) {
+      if (Platform.isAndroid) {
+        Fluttertoast.showToast(
+          msg: "Please check your network connection and try again later!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } else if (Platform.isWindows) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text("Please check your network connection and try again later!"),
+        ));
+      }
+    }
+
     _toggleEdit(); // Exit editing mode after saving
   }
 

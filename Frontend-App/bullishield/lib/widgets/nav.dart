@@ -87,7 +87,7 @@ class MyDrawerState extends State<MyDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProfileScreen(),
+                    builder: (context) => ProfileScreen(currentUser: widget.currentUser),
                   ),
                 );
               },

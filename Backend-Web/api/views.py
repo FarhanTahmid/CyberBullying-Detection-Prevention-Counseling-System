@@ -114,6 +114,27 @@ class User_Complain_Registration(APIView):
             return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_406_NOT_ACCEPTABLE)
         
 class Get_User_Profile(APIView):
+    
+    def post(self,request,user_id):
+        data=request.data
+        #get the values which will be updates
+        full_name=data.get('full_name')
+        email_address=data.get('email_address')
+        contact_no=data.get('contact_no')
+        home_address=data.get('home_address')
+        
+        # update values
+        try:
+            user=Parent_organization_users.objects.get(user_id=user_id)
+            user.full_name=full_name
+            user.email_address=email_address
+            user.contact_no=contact_no
+            user.home_address=home_address
+            user.save()
+            
+            return Response({'success': 'Edited Profile Info'}, status=status.HTTP_200_OK)
+        except:
+            return Response({'error': 'Can not edit Profile Infor'}, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self,request,user_id):
 
