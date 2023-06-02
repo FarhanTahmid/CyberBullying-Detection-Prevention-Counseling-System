@@ -1,4 +1,10 @@
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User,auth
@@ -50,24 +56,23 @@ class Login(APIView):
         username=data.get('username')
         password=data.get('password')
 
-        user=auth.authenticate(username=username,password=password)
+        user=authenticate(username=username,password=password)
         
         if user is not None:
-            auth.login(request,user)
-            return Response({'success': 'Logged in successfully','username':username}, status=status.HTTP_202_ACCEPTED)
+            refresh=RefreshToken.for_user(user=user)
+            return Response({'success': 'Logged in successfully','username':username,'token':str(refresh.access_token)}, status=status.HTTP_202_ACCEPTED)
         else:
             return Response({'error': 'Login unsuccessful'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class User_Authentication(APIView):
     
-    def get(self,request):
-        
-        user=request.user
-        if(user.is_authenticated):
-            return Response({'success': 'User authenticated'}, status=status.HTTP_202_ACCEPTED)
-        else:
-            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-        
+    @api_view(['GET'])
+    @authentication_classes([TokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def get(request):
+        authenticated = True
+        # Perform any additional checks or operations here
+        return Response({'authenticated': authenticated}, status=status.HTTP_200_OK)
             
 
 class User_Complain_Registration(APIView):
@@ -109,6 +114,27 @@ class User_Complain_Registration(APIView):
             return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_406_NOT_ACCEPTABLE)
         
 class Get_User_Profile(APIView):
+    
+    def post(self,request,user_id):
+        data=request.data
+        #get the values which will be updates
+        full_name=data.get('full_name')
+        email_address=data.get('email_address')
+        contact_no=data.get('contact_no')
+        home_address=data.get('home_address')
+        
+        # update values
+        try:
+            user=Parent_organization_users.objects.get(user_id=user_id)
+            user.full_name=full_name
+            user.email_address=email_address
+            user.contact_no=contact_no
+            user.home_address=home_address
+            user.save()
+            
+            return Response({'success': 'Edited Profile Info'}, status=status.HTTP_200_OK)
+        except:
+            return Response({'error': 'Can not edit Profile Infor'}, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self,request,user_id):
 
