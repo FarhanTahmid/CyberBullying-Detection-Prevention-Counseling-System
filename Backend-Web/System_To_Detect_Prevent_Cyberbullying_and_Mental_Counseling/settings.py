@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'user_complains',
     'api',
     'rest_framework',
+    'rest_framework_simplejwt',
+    
     
 ]
 
@@ -106,6 +108,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -127,6 +135,9 @@ import os
 #media
 MEDIA_ROOT= os.path.join(BASE_DIR, 'User Files/')
 MEDIA_URL= "/media_files/"
+
+import openai
+OPENAI_API_KEY=os.environ.get('chat_gpt_api')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

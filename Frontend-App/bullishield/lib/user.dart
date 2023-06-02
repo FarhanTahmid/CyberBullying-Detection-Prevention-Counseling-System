@@ -1,19 +1,18 @@
-import 'dart:ffi';
+import 'package:bullishield/backend.dart';
 
 class User {
   //private final variables
 
-  String _user_id='';
-  String _organization_name='';
-  String _full_name='';
-  String _user_picture='';
-  String _birth_date='';
-  String _contact_no='';
-  String _email_address='';
-  String _home_address='';
-  String _gender='';
-  bool _is_proctor=false;
-
+  String _user_id = '';
+  String _organization_name = '';
+  String _full_name = '';
+  String _user_picture = '';
+  String _birth_date = '';
+  String _contact_no = '';
+  String _email_address = '';
+  String _home_address = '';
+  String _gender = '';
+  bool _is_proctor = false;
   //Constructor
   // User(
   //     this._user_id,
@@ -22,7 +21,7 @@ class User {
   //     this._user_picture,
   //     this._birth_date,
   //     this._contact_no,
-  //     this._email_address, 
+  //     this._email_address,
   //     this._home_address,
   //     this._gender,
   //     this._is_proctor);
@@ -49,37 +48,38 @@ class User {
     _organization_name = organization_name;
   }
 
-  set full_name(String full_name){
+  set full_name(String full_name) {
     _full_name = full_name;
   }
 
-  set user_picture(String user_picture){
+  set user_picture(String user_picture) {
+    Backend backend = Backend();
+    String backendMeta = backend.backendMeta;
+    user_picture = '$backendMeta$user_picture';
     _user_picture = user_picture;
-
   }
-  
-  set birth_date(String birt_date){
+
+  set birth_date(String birt_date) {
     _birth_date = birt_date;
   }
 
-  set contact_no(String contact_no){
+  set contact_no(String contact_no) {
     _contact_no = contact_no;
   }
 
-  set email_address(String email_address){
+  set email_address(String email_address) {
     _email_address = email_address;
   }
 
-  set home_address(String home_address){
+  set home_address(String home_address) {
     _home_address = home_address;
   }
 
-  set gender(String gender){
+  set gender(String gender) {
     _gender = gender;
   }
 
-  set is_proctor(bool proctor){
+  set is_proctor(bool proctor) {
     _is_proctor = proctor;
   }
-
 }
