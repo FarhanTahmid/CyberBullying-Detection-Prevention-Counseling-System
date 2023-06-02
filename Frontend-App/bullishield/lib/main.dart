@@ -1,16 +1,8 @@
-import 'package:bullishield/Screens/AddMore/addnewcomplain.dart';
-import 'package:bullishield/Screens/Complain/complain_details.dart';
-import 'package:bullishield/Screens/HomePage/homepage.dart';
-import 'package:bullishield/Screens/Login/components/login_form.dart';
-import 'package:bullishield/Screens/Login/login_screen.dart';
-import 'package:bullishield/Screens/Signup/signup_screen.dart';
+import 'Screens/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bullishield/constants.dart';
 import 'package:http/http.dart' as http;
 
-import 'Screens/AddMore/addnewcomplain.dart';
-import 'Screens/NavScreens/ChatBotScreen.dart';
 import 'widgets/list_widget.dart';
 
 void main() => runApp(const MyApp());
@@ -56,7 +48,7 @@ class MyApp extends StatelessWidget {
           )),
       debugShowCheckedModeBanner: false,
       routes: {
-        "/": (context) => HomePage(),
+        "/": (context) => WelcomeScreen(),
       },
     );
   }

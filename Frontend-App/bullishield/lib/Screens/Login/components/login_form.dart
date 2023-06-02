@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:bullishield/Screens/HomePage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -37,9 +37,13 @@ class LoginFormState extends State<LoginForm> {
       });
 
       if ((response.statusCode) == 202) {
+        var data = jsonDecode(response.body);
+        print(data);
+
         // get user details via the api
-        var userDataURL =
-            (backendMeta) + '/apis/user_details/' + userIdController.text.trim();
+        var userDataURL = (backendMeta) +
+            '/apis/user_details/' +
+            userIdController.text.trim();
         var getUserData = await http.get(Uri.parse(userDataURL));
         var status = getUserData.statusCode;
         if (getUserData.statusCode == 202) {
@@ -58,16 +62,21 @@ class LoginFormState extends State<LoginForm> {
           recentUser.gender = userResponseData['gender'];
           recentUser.is_proctor = userResponseData['is_proctor'];
         }
-
-        Fluttertoast.showToast(
-          msg: "Login Successful",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.grey[700],
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        if(Platform.isWindows){
+          
+        }
+        if(Platform.isAndroid){
+            Fluttertoast.showToast(
+            msg: "Login Successful",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.grey[700],
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        }
+        
         //TODO:
         //go to backends and get user information on arguments, fix api
         //get response from the api and initialize and test 6s

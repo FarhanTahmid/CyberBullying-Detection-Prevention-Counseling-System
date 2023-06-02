@@ -1,4 +1,6 @@
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User,auth
@@ -50,11 +52,11 @@ class Login(APIView):
         username=data.get('username')
         password=data.get('password')
 
-        user=auth.authenticate(username=username,password=password)
+        user=authenticate(username=username,password=password)
         
         if user is not None:
-            auth.login(request,user)
-            return Response({'success': 'Logged in successfully','username':username}, status=status.HTTP_202_ACCEPTED)
+            refresh=RefreshToken.for_user(user=user)
+            return Response({'success': 'Logged in successfully','username':username,'token':str(refresh.access_token)}, status=status.HTTP_202_ACCEPTED)
         else:
             return Response({'error': 'Login unsuccessful'}, status=status.HTTP_401_UNAUTHORIZED)
 
