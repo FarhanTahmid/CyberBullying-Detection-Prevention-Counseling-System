@@ -179,7 +179,8 @@ class TestImagetoText(APIView):
         image_file=data.get('image')
         print(image_file)
         image=Image.open(image_file)
-        pytesseract.pytesseract.tesseract_cmd = r'F:\Tesseract\tesseract.exe'
+        # pytesseract.pytesseract.tesseract_cmd = r'F:\Tesseract\tesseract.exe'
+        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
         text=pytesseract.image_to_string(image=image)
         print(text)
         return Response({'success':'Got data','text':text},status=status.HTTP_202_ACCEPTED)
