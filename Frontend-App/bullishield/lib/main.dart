@@ -1,21 +1,9 @@
-<<<<<<< HEAD
-import 'package:bullishield/Screens/HomePage/homepage.dart';
-import 'package:bullishield/Screens/Login/components/login_form.dart';
-import 'package:bullishield/Screens/Login/login_screen.dart';
-import 'package:bullishield/Screens/Signup/signup_screen.dart';
-=======
 import 'Screens/Welcome/welcome_screen.dart';
->>>>>>> f45eb2c865937658ba55513fc4340408644c93b5
 import 'package:flutter/material.dart';
 import 'package:bullishield/constants.dart';
 import 'package:http/http.dart' as http;
-<<<<<<< HEAD
-
-import 'Screens/NavScreens/ChatBotScreen.dart';
-=======
 import 'package:bullishield/authManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
->>>>>>> f45eb2c865937658ba55513fc4340408644c93b5
 import 'widgets/list_widget.dart';
 
 void main() {
