@@ -5,12 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bullishield/user.dart';
 
-
 import '../Screens/Login/login_screen.dart';
 import '../Screens/NavScreens/ChatBotScreen.dart';
 import '../Screens/NavScreens/ComplainFormScreen.dart';
 import '../Screens/NavScreens/NotificationScreen.dart';
 import '../Screens/NavScreens/ProfileScreen.dart';
+import '../Screens/NavScreens/ProctorView/ProctorScreen.dart';
 import 'complain_form.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -154,6 +154,31 @@ class MyDrawer extends StatelessWidget {
                 ),
                 title: Text(
                   "Add New Complain",
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    color: Colors.purple.shade900,
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Add your desired action here
+                // For example, navigate to the Notifications screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProctorScreen(),
+                  ),
+                );
+              },
+              child: ListTile(
+                leading: Icon(
+                  CupertinoIcons.person_crop_rectangle,
+                  color: Colors.purple.shade900,
+                ),
+                title: Text(
+                  "Proctor page",
                   textScaleFactor: 1.2,
                   style: TextStyle(
                     color: Colors.purple.shade900,
