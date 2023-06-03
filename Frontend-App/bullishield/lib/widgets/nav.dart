@@ -160,7 +160,7 @@ class MyDrawerState extends State<MyDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ComplainFormScreen(),
+                    builder: (context) => ComplainFormScreen(currentUser: widget.currentUser),
                   ),
                 );
               },

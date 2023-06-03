@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -9,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User,auth
 from application_users.models import Parent_organization_users
-from user_complains.models import User_Complains
+from user_complains.models import User_Complains,Complain_types,UserComplainProof
 from parent_organization.models import Parent_organization
 from user_complains.models import User_Complains
 from django.contrib.auth.hashers import make_password
@@ -75,14 +76,17 @@ class User_Authentication(APIView):
         return Response({'authenticated': authenticated}, status=status.HTTP_200_OK)
             
 
+
 class User_Complain_Registration(APIView):
+    parser_classes = [MultiPartParser, FormParser]
     
     def post(self,request):
+        
         data=request.data
         #get the current user
-        current_user=request.user
-        complainee_id=current_user.username
-        
+        complainee_id=data.get('user_id')
+        bully_picture = request.FILES.get('bully_image')
+        image_proves=request.FILES.getlist('image_proves')
         
         #get user data
         try:
@@ -93,26 +97,33 @@ class User_Complain_Registration(APIView):
         except:
             return Response({'error': 'Complain Lodging unsuccessful because id doesnt exist.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-
+        complain_type=Complain_types.objects.filter(complain_type=data.get('harrasment_type')).values('pk')
         
         #register a complain now
-        try:
-            new_complain=User_Complains(
+        
+        new_complain=User_Complains(
                 complainee_id=Parent_organization_users.objects.get(user_id=complainee_id),
                 organization_id=Parent_organization.objects.get(id=organization_id.id),
-                complain_type=data.get('complain_type'),
+                complain_type=Complain_types.objects.get(pk=complain_type[0]['pk']),
                 bully_name=data.get('bully_name'),
                 bully_id=data.get('bully_id'),
-                bully_picture=data.get('bully_picture'),
+                bully_picture=bully_picture,
                 incident_date=data.get('incident_date'),
-                complain_description=data.get('complain_description')
-                
+                complain_description=data.get('description') 
             )
-            new_complain.save()
-            return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
-        except:
-            return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        new_complain.save()
+        for image in image_proves:
+            upload_proves=UserComplainProof(
+                complain_id=User_Complains.objects.get(pk=new_complain.pk),
+                proof=image
+            )
+            upload_proves.save()
+            
         
+        return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
+        # except:
+        #     return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_400_BAD_REQUEST)
+    
 class Get_User_Profile(APIView):
     
     def post(self,request,user_id):
@@ -186,6 +197,15 @@ class Details_of_complains_Lodged_by_user(APIView):
                          , status=status.HTTP_302_FOUND)
 
 
+class ComplainTypes(APIView):
+    
+    def get(self,request):
+        complain_types=Complain_types.objects.all()
+        typeDict={}
+        
+        for type in complain_types:
+            typeDict.update({type.pk:type.complain_type})
+        return Response({'success':'Got types','types':typeDict},status=status.HTTP_200_OK)
 
 
 

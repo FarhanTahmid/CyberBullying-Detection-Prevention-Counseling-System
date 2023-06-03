@@ -15,7 +15,7 @@ class Complain_types(models.Model):
         verbose_name="Complain Type"
 
     def __str__(self) -> str:
-        return str(self.complain_type)
+        return str(self.pk)
     def get_absolute_url(self):
         return reverse("complain_type", kwargs={"complain_id": self.pk})
     
@@ -25,7 +25,6 @@ class User_Complains(models.Model):
     '''
     Stores all the necessary informations for user complains
     '''
-    
     #complainee_id is the username of the user who is lodging the complain
     complainee_id=models.ForeignKey(Parent_organization_users,null=False,blank=False,on_delete=models.CASCADE)
     #organization_id is the id of the organization from which the user belongs
@@ -60,7 +59,7 @@ class UserComplainProof(models.Model):
 
 
     def __str__(self):
-        return self.name
+        return str(self.complain_id)
 
     def get_absolute_url(self):
         return reverse("complain_id", kwargs={"complain_id": self.complain_id})
