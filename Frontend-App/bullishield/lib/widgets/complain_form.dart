@@ -1,14 +1,27 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:bullishield/backend.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:bullishield/user.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+
 
 class ComplainForm extends StatefulWidget {
+  final User currentUser;
+
+  const ComplainForm({Key? key, required this.currentUser}) : super(key: key);
+
   @override
   _ComplainFormState createState() => _ComplainFormState();
 }
 
 class _ComplainFormState extends State<ComplainForm> {
+  Backend backend = Backend();
+  TextEditingController _dateController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _idController = TextEditingController();
   TextEditingController _bullyNameController = TextEditingController();
@@ -43,20 +56,147 @@ class _ComplainFormState extends State<ComplainForm> {
     }
   }
 
-  void complainRegistration(
-      String name,
-      String id,
-      String bullyId,
-      String bullyName,
-      String bullyid,
-      String incidentDate,
-      String description,
-      String harrasmentType) async {
-    print(name);
-    print(id);
-    print(bullyId);
-    print(bullyName);
-    
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      setState(() {
+        _dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+}
+
+  Future<List<String>> getHarassmentTypes() async {
+    final List<String> harassmentTypes = [];
+    // Make an HTTP GET request to your API endpoint
+    Backend backend = Backend();
+    String backendMeta = backend.backendMeta;
+    final response =
+        await http.get(Uri.parse('$backendMeta/apis/complain_types'));
+
+    // Check if the request was successful
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      jsonResponse['types'].forEach((key, value) {
+        harassmentTypes.add(value);
+      });
+    }
+    return harassmentTypes;
+  }
+
+  // SEND COMPLAIN DATA THROUGH API
+
+  void complainRegistration(String bullyName, String bullyid,
+      String incidentDate, String description, String? harrasmentType) async {
+    User currentUser = widget.currentUser;
+    String backendMeta = backend.backendMeta;
+    String postComplainUrl = '$backendMeta/apis/complain_reg/';
+    String user_id = currentUser.user_id;
+    String user_name = currentUser.full_name;
+
+    // Create a new multipart request
+    var request = http.MultipartRequest('POST', Uri.parse(postComplainUrl));
+
+    // Add string fields to the request
+    request.fields['user_id'] = user_id;
+    request.fields['user_name'] = user_name;
+    request.fields['bully_name'] = bullyName;
+    request.fields['bully_id'] = bullyid;
+    request.fields['incident_date'] = _dateController.text.trim();
+    request.fields['description'] = description;
+    request.fields['harrasment_type'] = harrasmentType ?? '';
+
+    // Add image files to the request
+    for (var image in _images) {
+      var imageFile =
+          await http.MultipartFile.fromPath('image_proves', image.path);
+      request.files.add(imageFile);
+    }
+
+    // Add bully image file to the request
+    for (var image in _bullyImage) {
+      var bullyImageFile =
+          await http.MultipartFile.fromPath('bully_image', image.path);
+      request.files.add(bullyImageFile);
+    }
+    // Send the request
+    var response = await request.send();
+    print(request);
+    if (response.statusCode == 200) {
+      if (Platform.isAndroid) {
+        Fluttertoast.showToast(
+          msg: "Complain posted successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } else if (Platform.isWindows) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Complain posted successfully"),
+        ));
+      } else {
+        if (Platform.isAndroid) {
+          Fluttertoast.showToast(
+            msg: "Something went wrong! Please try again later.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.grey[700],
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        } else if (Platform.isWindows) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Something went wrong! Please try again later."),
+          ));
+        }
+      }
+    }
+    // } catch (e) {
+    //   if (Platform.isAndroid) {
+    //     Fluttertoast.showToast(
+    //       msg: "Please check your internet connection and try agin!",
+    //       toastLength: Toast.LENGTH_SHORT,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIosWeb: 1,
+    //       backgroundColor: Colors.grey[700],
+    //       textColor: Colors.white,
+    //       fontSize: 16.0,
+    //     );
+    //   } else if (Platform.isWindows) {
+    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //       content: Text("Please check your internet connection and try agin!"),
+    //     ));
+    //   }
+    // }
+  }
+
+  List<String> _harassmentTypes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchHarassmentTypes();
+  }
+
+  Future<void> fetchHarassmentTypes() async {
+    try {
+      List<String> types = await getHarassmentTypes();
+      setState(() {
+        _harassmentTypes = types;
+      });
+    } catch (e) {
+      // Handle the error if the harassment types couldn't be fetched
+      print('Error: $e');
+    }
   }
 
   @override
@@ -102,20 +242,6 @@ class _ComplainFormState extends State<ComplainForm> {
                 textScaleFactor: 1.4,
               ),
               SizedBox(height: 15),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Your Name',
-                ),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _idController,
-                decoration: InputDecoration(
-                  labelText: 'Your ID',
-                ),
-              ),
-              SizedBox(height: 10),
               TextFormField(
                 controller: _bullyNameController,
                 decoration: InputDecoration(
@@ -175,10 +301,15 @@ class _ComplainFormState extends State<ComplainForm> {
                 ),
               ),
               SizedBox(height: 30),
-              TextFormField(
-                controller: _bullyingDateTimeController,
-                decoration: InputDecoration(
-                  labelText: 'Date and Time of being Bullied',
+              GestureDetector(
+                onTap: () => _selectDate(context),
+                child: AbsorbPointer(
+                  child: TextFormField(
+                    controller: _dateController,
+                    decoration: InputDecoration(
+                      labelText: 'Date of being Bullied',
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -192,20 +323,12 @@ class _ComplainFormState extends State<ComplainForm> {
                     _selectedHarassmentType = newValue;
                   });
                 },
-                items: [
-                  DropdownMenuItem(
-                    value: 'Physical',
-                    child: Text('Physical'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Verbal',
-                    child: Text('Verbal'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Cyber',
-                    child: Text('Cyber'),
-                  ),
-                ],
+                items: _harassmentTypes.map((type) {
+                  return DropdownMenuItem(
+                    value: type,
+                    child: Text(type),
+                  );
+                }).toList(),
               ),
               SizedBox(height: 20),
               Text('Add Valid Images', style: TextStyle(fontSize: 18)),
@@ -270,8 +393,6 @@ class _ComplainFormState extends State<ComplainForm> {
                   ElevatedButton(
                     onPressed: () {
                       // Process the form data here
-                      String name = _nameController.text;
-                      String id = _idController.text;
                       String bullyName = _bullyNameController.text;
                       String bullyId = _bullyIdController.text;
                       String bullyingDateTime =
@@ -279,8 +400,9 @@ class _ComplainFormState extends State<ComplainForm> {
                       String description = _descriptionController.text;
                       String? harassmentType = _selectedHarassmentType;
 
-                      // Perform any desired action with the form data
-
+                      // Perform complain registration action with the form data
+                      complainRegistration(bullyName, bullyId, bullyingDateTime,
+                          description, harassmentType);
                       // Clear the form fields
                       _nameController.clear();
                       _idController.clear();
