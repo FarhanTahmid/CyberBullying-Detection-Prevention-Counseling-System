@@ -38,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _emailController.text = currentUser.email_address;
     _phoneController.text = currentUser.contact_no;
     _addressController.text = currentUser.home_address;
+    
   }
 
   @override
@@ -99,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         currentUser.email_address = _emailController.text.trim();
         currentUser.contact_no = _phoneController.text.trim();
         currentUser.home_address = _addressController.text.trim();
-        
+
         if (Platform.isWindows) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text("Profile Information Updated!"),
