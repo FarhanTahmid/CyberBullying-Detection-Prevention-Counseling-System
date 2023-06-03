@@ -178,27 +178,13 @@ class _ComplainFormState extends State<ComplainForm> {
       request.files.add(multipartFile);
     }
     // Send the request
-    var response = await request.send();
+    try{
+      var response = await request.send();
 
-    if (response.statusCode == 200) {
-      if (Platform.isAndroid) {
-        Fluttertoast.showToast(
-          msg: "Complain posted successfully",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.grey[700],
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      } else if (Platform.isWindows) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Complain posted successfully"),
-        ));
-      } else {
+      if (response.statusCode == 200) {
         if (Platform.isAndroid) {
           Fluttertoast.showToast(
-            msg: "Something went wrong! Please try again later.",
+            msg: "Complain posted successfully",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -208,28 +194,43 @@ class _ComplainFormState extends State<ComplainForm> {
           );
         } else if (Platform.isWindows) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Something went wrong! Please try again later."),
+            content: Text("Complain posted successfully"),
           ));
+        } else {
+          if (Platform.isAndroid) {
+            Fluttertoast.showToast(
+              msg: "Something went wrong! Please try again later.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.grey[700],
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
+          } else if (Platform.isWindows) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Something went wrong! Please try again later."),
+            ));
+          }
         }
       }
+    } catch (e) {
+      if (Platform.isAndroid) {
+        Fluttertoast.showToast(
+          msg: "Please check your internet connection and try agin!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[700],
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } else if (Platform.isWindows) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Please check your internet connection and try agin!"),
+        ));
+      }
     }
-    // } catch (e) {
-    //   if (Platform.isAndroid) {
-    //     Fluttertoast.showToast(
-    //       msg: "Please check your internet connection and try agin!",
-    //       toastLength: Toast.LENGTH_SHORT,
-    //       gravity: ToastGravity.BOTTOM,
-    //       timeInSecForIosWeb: 1,
-    //       backgroundColor: Colors.grey[700],
-    //       textColor: Colors.white,
-    //       fontSize: 16.0,
-    //     );
-    //   } else if (Platform.isWindows) {
-    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //       content: Text("Please check your internet connection and try agin!"),
-    //     ));
-    //   }
-    // }
   }
 
   List<String> _harassmentTypes = [];
