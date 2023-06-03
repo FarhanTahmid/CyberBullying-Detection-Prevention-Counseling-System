@@ -187,8 +187,6 @@ class Details_of_complains_Lodged_by_user(APIView):
     def get(self,request,user_id):
 
         get_complains=User_Complains.objects.filter(complainee_id=user_id).values()
-        
-
         return Response({'success': 'Complains loaded',
                          'complains':get_complains}
                          , status=status.HTTP_200_OK)

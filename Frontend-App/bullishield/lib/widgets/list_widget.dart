@@ -1,73 +1,24 @@
+import 'package:bullishield/backend.dart';
 import 'package:flutter/material.dart';
+import 'package:bullishield/Screens/Complain/complain.dart';
 
-class ListWidget extends StatelessWidget {
-  final List list;
+class ComplainDetailsScreen extends StatefulWidget {
+  final Complain complain;
 
-  const ListWidget({Key? key, required this.list}) : super(key: key);
+  ComplainDetailsScreen({required this.complain});
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailsScreen(
-              title: "Complain-01",
-              subtitle: "Campus harassment complain against Farhan Tahmid",
-              status: "Processing",
-              complainDetails:
-                  "Filing a cyber bullying complaint is a crucial step in combatting online harassment and ensuring the safety and well-being of victims. By reporting incidents of cyber bullying, individuals contribute to creating a safer digital environment, promoting awareness, and advocating for a society free from the detrimental effects of online abuse.",
-            ),
-          ),
-        );
-      },
-      child: Card(
-        color: Colors.purple.shade50,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ListTile(
-            title: Text(
-              "Complain-01",
-              textScaleFactor: 1.5,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
-              ),
-            ),
-            subtitle: Text(
-              "Campus harassment complain against ID: 2031458642",
-              style: TextStyle(
-                color: Colors.blueGrey,
-              ),
-            ),
-            trailing: Text(
-              "Processing",
-              textScaleFactor: 1.3,
-              style: TextStyle(
-                color: Colors.amber,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  _ComplainDetailsScreenState createState() => _ComplainDetailsScreenState();
 }
 
-class DetailsScreen extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String status;
-  final String complainDetails;
-
-  const DetailsScreen({
-    required this.title,
-    required this.subtitle,
-    required this.status,
-    required this.complainDetails,
-  });
+class _ComplainDetailsScreenState extends State<ComplainDetailsScreen> {
+  Backend backend = Backend();
+  String backendMeta = '';
+  String bully_picture_media = '';
+  void initialize() {
+    backendMeta = backend.backendMeta;
+    bully_picture_media = '$backendMeta/media_files/bully_pictures/';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,143 +26,213 @@ class DetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Complain Details'),
       ),
-      body: Container(
-        margin: EdgeInsets.all(26.0),
-        padding: EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.purple.shade200.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.deepPurple,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+      body: Row(
+        children: [
+          Expanded(
+            flex: -2,
+            child: Container(
+              color: Theme.of(context).primaryColor,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Complain Against:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.bullyId,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Complain Description:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.complainDescription,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bully Name:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.bullyName,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Incident Date:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.incidentDate,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Complain Type:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.complainTypeId.toString(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Bully Picture:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Image.network(
+                    bully_picture_media+widget.complain.bullyPicture,
+                    fit: BoxFit.cover,
+                    height: 200,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Proves:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: 2,
+                      itemBuilder: (context, index) {
+                        // return Image.network();
+                      },
+                    ),
+                  ),
+                  Text(
+                    'Complain Vlidation:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.complainValidation.toString(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Text(
+                    'Complain Status:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.complainStatus,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Text(
+                    'Complain Decision:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.complainDecision,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Text(
+                    'Bully Guilty?:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.complain.bullyGuilty.toString(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Text(
-                  'Type of harassment:',
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  "Cyber Bully",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.pink.shade900,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Text(
-                  'Date and time:',
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  "31st February, 2023.12pm",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Text(
-                  'Place or Platform:',
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  "NSU Campus",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Text(
-                  'Status:',
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  status,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.amber.shade800,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Complain Details:',
-              style: TextStyle(
-                color: Colors.deepPurple,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              complainDetails,
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

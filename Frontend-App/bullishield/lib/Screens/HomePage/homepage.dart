@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:bullishield/Screens/NavScreens/ComplainFormScreen.dart';
 import 'package:bullishield/Screens/Complain/complain.dart';
 import 'package:bullishield/backend.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +124,12 @@ class _HomePageState extends State<HomePage> {
                       title: Text("Complain Against: ${complain.bullyName}"),
                       subtitle: Text("Complain Description: ${complain.complainDescription}"),
                       onTap: () {
-                        // Handle the onTap event for each list item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ComplainDetailsScreen(complain: complain),
+                          ),
+                        );
                       },
                     );
                   },
@@ -138,12 +143,12 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate to the Complain screen to create a new complain
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => ComplainScreen(currentUser: user),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ComplainFormScreen(currentUser: user),
+            ),
+          );
         },
         child: Icon(Icons.add),
       ),
