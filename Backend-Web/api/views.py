@@ -100,8 +100,8 @@ class User_Complain_Registration(APIView):
         complain_type=Complain_types.objects.filter(complain_type=data.get('harrasment_type')).values('pk')
         
         #register a complain now
-        
-        new_complain=User_Complains(
+        try:
+            new_complain=User_Complains(
                 complainee_id=Parent_organization_users.objects.get(user_id=complainee_id),
                 organization_id=Parent_organization.objects.get(id=organization_id.id),
                 complain_type=Complain_types.objects.get(pk=complain_type[0]['pk']),
@@ -111,18 +111,16 @@ class User_Complain_Registration(APIView):
                 incident_date=data.get('incident_date'),
                 complain_description=data.get('description') 
             )
-        new_complain.save()
-        for image in image_proves:
-            upload_proves=UserComplainProof(
-                complain_id=User_Complains.objects.get(pk=new_complain.pk),
-                proof=image
-            )
-            upload_proves.save()
-            
-        
-        return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
-        # except:
-        #     return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_400_BAD_REQUEST)
+            new_complain.save()
+            for image in image_proves:
+                upload_proves=UserComplainProof(
+                    complain_id=User_Complains.objects.get(pk=new_complain.pk),
+                    proof=image
+                )
+                upload_proves.save()
+            return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
+        except:
+            return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_400_BAD_REQUEST)
     
 class Get_User_Profile(APIView):
     
@@ -185,16 +183,13 @@ class Get_User_Profile(APIView):
             return Response({'error': 'User not found'}, status=status.HTTP_400_BAD_REQUEST)
         
 class Details_of_complains_Lodged_by_user(APIView):
+    
+    def get(self,request,user_id):
 
-    def get(self,request):
-        current_user=request.user
-        user_id=current_user.username
-
-        get_complains=User_Complains.objects.get(complainee_id=user_id).all()
-
+        get_complains=User_Complains.objects.filter(complainee_id=user_id).values()
         return Response({'success': 'Complains loaded',
                          'complains':get_complains}
-                         , status=status.HTTP_302_FOUND)
+                         , status=status.HTTP_200_OK)
 
 
 class ComplainTypes(APIView):
