@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User,auth
 from application_users.models import Parent_organization_users
-from user_complains.models import User_Complains,Complain_types
+from user_complains.models import User_Complains,Complain_types,UserComplainProof
 from parent_organization.models import Parent_organization
 from user_complains.models import User_Complains
 from django.contrib.auth.hashers import make_password
@@ -76,14 +76,17 @@ class User_Authentication(APIView):
         return Response({'authenticated': authenticated}, status=status.HTTP_200_OK)
             
 
+
 class User_Complain_Registration(APIView):
     parser_classes = [MultiPartParser, FormParser]
+    
     def post(self,request):
+        
         data=request.data
         #get the current user
-        
         complainee_id=data.get('user_id')
         bully_picture = request.FILES.get('bully_image')
+        image_proves=request.FILES.getlist('image_proves')
         
         #get user data
         try:
@@ -109,10 +112,18 @@ class User_Complain_Registration(APIView):
                 complain_description=data.get('description') 
             )
         new_complain.save()
+        for image in image_proves:
+            upload_proves=UserComplainProof(
+                complain_id=User_Complains.objects.get(pk=new_complain.pk),
+                proof=image
+            )
+            upload_proves.save()
+            
+        
         return Response({'success': 'Complain Lodged successfully'}, status=status.HTTP_202_ACCEPTED)    
         # except:
         #     return Response({'error': 'Complain Lodging unsuccessful'}, status=status.HTTP_400_BAD_REQUEST)
-        
+    
 class Get_User_Profile(APIView):
     
     def post(self,request,user_id):

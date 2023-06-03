@@ -59,7 +59,7 @@ class UserComplainProof(models.Model):
 
 
     def __str__(self):
-        return self.name
+        return str(self.complain_id)
 
     def get_absolute_url(self):
         return reverse("complain_id", kwargs={"complain_id": self.complain_id})
