@@ -1,12 +1,15 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:bullishield/Screens/HomePage/homepage.dart';
 import 'package:bullishield/backend.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bullishield/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Screens/Login/login_screen.dart';
 import '../Screens/NavScreens/ChatBotScreen.dart';
@@ -43,6 +46,16 @@ class MyDrawerState extends State<MyDrawer> {
   void initState() {
     super.initState();
     getUserDetails();
+  }
+
+  Future<void> removeToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+  }
+
+  Future<void> removeUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('username');
   }
 
   @override
@@ -87,7 +100,8 @@ class MyDrawerState extends State<MyDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProfileScreen(currentUser: widget.currentUser),
+                    builder: (context) =>
+                        ProfileScreen(currentUser: widget.currentUser),
                   ),
                 );
               },
@@ -160,7 +174,8 @@ class MyDrawerState extends State<MyDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ComplainFormScreen(currentUser: widget.currentUser),
+                    builder: (context) =>
+                        ComplainFormScreen(currentUser: widget.currentUser),
                   ),
                 );
               },
@@ -182,12 +197,30 @@ class MyDrawerState extends State<MyDrawer> {
               onTap: () {
                 // Add your desired action here
                 // For example, navigate to the Notifications screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProctorScreen(),
-                  ),
-                );
+                if (widget.currentUser.is_proctor) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProctorScreen(),
+                    ),
+                  );
+                } else {
+                  if (Platform.isWindows) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("You are not a Proctor!"),
+                    ));
+                  } else if (Platform.isAndroid) {
+                    Fluttertoast.showToast(
+                      msg: "You are not a Proctor!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.grey[700],
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  }
+                }
               },
               child: ListTile(
                 leading: Icon(
@@ -207,6 +240,8 @@ class MyDrawerState extends State<MyDrawer> {
               onTap: () {
                 // Add your desired action here
                 // For example, navigate to the Notifications screen
+                removeToken();
+                removeUsername();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
