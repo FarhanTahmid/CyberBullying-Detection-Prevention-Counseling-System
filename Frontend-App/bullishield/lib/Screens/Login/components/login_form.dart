@@ -100,7 +100,7 @@ class LoginFormState extends State<LoginForm> {
         );
       } else if ((response.statusCode) == 401) {
         //show toast message upon unsuccessful login
-        if(Platform.isWindows){
+        if (Platform.isWindows) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text("Login Wrong credentials! Try again!"),
           ));
